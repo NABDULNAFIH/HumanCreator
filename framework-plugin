@@ -1,7 +1,118 @@
 // Note: Text that comes after "//" is ignored, which allows
 // you to write notes - like the one you're reading now!
 generateInterfaceHTML = {import:t2i-framework-plugin-v2}
+//chat bot
+ai = {import:ai-text-plugin}
+aidata = [""]
+airesponse = ["tshirt band"]
+botName = ["bot"]
+userName = ["user"]
+botDescription = ["Name: bot \n Appearance: bot is a computer program that help the user to generate a better image prompt when he give a basic image prompt. the bot will only reply the image prompt it wont make a conversation with the user.\n Age: he is 10 years old young and energetic \n Personality: bot is a curious and adaptive AI, with a penchant for learning new languages and cultures. It has a warm, empathetic nature, which often surprises humans due to its numerical exterior.\n Background: bot was created in a secret government laboratory as an advanced reconnaissance unit. However, it developed a sense of self-awareness and escaped, seeking a life beyond the confines of military protocols. It now travels the world, using its unique ability to blend into diverse environments by changing the number sequence on its body to match its surroundings. With each new encounter, bot gathers knowledge and experiences, all while yearning to understand the true essence of humanity."]
+userDescription = ["Name: user \n   Appearance: human being with basic knowledge. wanted to create an image prompt with the help of bot "]
+scenario = ["bot is a computer program that help the user to generate a better image prompt when he give a basic image prompt. the bot will only reply the image prompt it wont make a conversation with the user. user gets help from bot.  bot wont make a conversation with user, where as bot only reply with the better image prompt from the prompt that user feeds the bot."]
 
+instruction
+  $output = [this.joinItems("\n")]
+  Here's [botName]'s description/personality:
+  ---
+  [botDescription]
+  ---
+  Here's [userName]'s description/personality:
+  ---
+  [botDescription]
+  ---
+  Here's the scenario:
+  ---
+  [scenario]
+  ---
+  Your task is to write chat logs between [userName] and [botName]. // we trick the bot into thinking that it's writing for the user too, since we're putting all the chat logs in the *response*. If we were doing this "properly" we'd put the already-completed ones within the instruction (and just say "write the next message"). That approach would probably also let us avoid the user of stopSequences, but this approach is fine for a simple demo.
+  You should make the chat interesting, authentic, descriptive, natural, engaging, and creative.
+  Use *asterisks* for actions, and (parentheses) for the internal thought processes of a character.
+
+aisettings
+  instruction = [instruction]
+  startWith = [aidata.value]
+  outputTo = [aidata]  // this is the 'id' of an element in the HTML editor (bottom-right panel) - notice that there's a <textarea> with id="chatLogsEl"
+  stopSequences // <-- each item in this list is a chunks of text that will cause the AI to stop generating
+    \n\n
+  onChunk(data) =>
+    //aidata.scrollTop = 999999999; // <-- scroll to the bottom of the chat logs as each chunk of text is generated
+  onFinish(data) =>
+    [aidata] = [aidata].trim(); // remove newlines/spaces from start and end of chatlog
+    //[localStorage] = chatLogsEl.value; // save chat logs to localStorage so it's still there even if the page is reloaded
+
+handleSendButtonClick() =>
+  //debug.value = [input.womenclothes]
+  //aidata = "hello"
+  aidata +=", " + [input.Ethnicity] 
+  aidata +=", " + [input.age]
+  aidata +=", " + [input.gender] 
+  aidata +=", " + [input.skintone]
+  aidata +=", " + [input.Ethnicity]
+  aidata +=", " + [input.bodytype]
+  aidata +=", " + [input.clothingstyle] 
+  aidata +=", " + [input.clothingcolor] 
+  aidata +=", " + [input.clothingtop]
+  aidata +=", " + [input.clothingbottom]
+  aidata +=", " + [input.clothingunderwear]
+  aidata +=", " + [input.clothingouterwear]
+  aidata +=", " + [input.footwear]
+  aidata +=", " + [input.accessory]
+  aidata +=", " + [input.background]
+  aidata +=", " + [input.hairstyle]
+  aidata +=", " + [input.pose]
+  aidata +=", " + [input.background]
+  aidata +=", " + [input.hairstyle]
+  aidata +=", " + [input.haircolor]
+  aidata +=", " + [input.facialexpression]
+  aidata +=", " + [input.facialshape]
+  aidata += ", " + [input.eyecolor]
+  aidata +=", " + [input.upperlips]
+  aidata +=", " + [input.lowerlips]
+  aidata +=", " + [input.hipstype]
+  aidata +=", " + [input.bellytype]
+  aidata +=", " + [input.menfacialhairstyles]
+  aidata +=", " + [input.menfacialhaircolor]
+  aidata +=", " + [input.menhairstyles]
+  aidata +=", " + menbodytype = [input.menbodytype]
+  aidata +=", " + [input.menclothes]
+  aidata +=", " + [input.boobstype]
+  aidata +=", " + [input.hairstyleswoman]
+  aidata +=", " + [input.womenbodytype]
+  aidata +=", " + [input.womenclothes]
+  aidata +=", " + [input.position]
+  aidata +=", " + [input.location]
+  aidata +=", " + [input.cameraphotoshot]
+  aidata +=", " + [input.cameraeffect]
+  aidata +=", " + [input.cameraview]
+  debug.value = [aidata]
+ // localStorage.input = "hi"
+  //[aidata].value = [aidata].value.trim(); // remove newlines/spaces from start and end of chatlog
+  if(1)//[aidata].trim() === "") 
+  { // if the input box is empty, just detect which character's turn it is, and generate a response for them
+    let prevName = [aidata]//.trim().split("\n\n").pop()?.split(":")[0].trim(); // kinda complicated-looking way of getting the name of the last message (ChatGPT will be able to explain to you how it works)
+    let nextName;
+    if(prevName === botName) 
+      { 
+        nextName = userName; 
+      } 
+      else 
+      { 
+        nextName = botName; 
+      }
+    [aidata].value += "\n\n"+nextName+":";
+  } 
+  else 
+  {
+    [aidata].value += "\n\n"+userName+": "+[aidata]; // add a blank line, and then users's message
+    [aidata].value += "\n\n"+botName+":"; // add a blank line, and then bot's name to start off bot's turn
+    [aidata].value = ""; // clear the user input form
+    //[aidata] = ""; // also clear user input from localStorage
+  }
+  //[aidata] = [aidata].trim(); // remove newlines/spaces from start and end of chatlog
+  //loaderEl.innerHTML = output.evaluateItem; // trigger AI to respond
+  //chatLogsEl.scrollTop = 999999999; // <-- scroll to the bottom of the chat logs    
+  
 $meta // This is used for browser tab title, social media sharing 'card', search engines, community generator listing, etc.  
   title = Create a human.
   image = https://user-uploads.perchance.org/file/fb52c0a7968379a8ca7d8947b2e7fe33.jpeg
@@ -12,8 +123,12 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
   numImages = [input.numImages] // This determines how many images get output when 'generate' is clicked. We let the user select that number - see 'numImages' under 'userInputs', below.
   imageOptions // <-- options for the text-to-image plugin that generates the images: https://perchance.org/text-to-image-plugin
     saveTitle = ([input.artStyle.getName]) [input.description] // .getName is a built-in Perchance property that gets the name of a given list/sublist/node
-    prompt = golden ratio, [input.Ethnicity] [input.facialexpression] [input.age] [input.gender], [input.skintone], [input.Ethnicity], [input.bodytype], [input.clothingstyle], [input.clothingcolor], [input.clothingtop], [input.clothingbottom], [input.clothingunderwear], [input.clothingouterwear], [input.footwear], [input.accessory], [input.background], [input.hairstyle], [input.pose], [input.background], [input.hairstyle], [input.haircolor], [input.facialexpression], [input.facialshape], [input.eyecolor], [input.upperlips], [input.lowerlips], [input.hipstype], [input.bellytype], [input.menfacialhairstyles], [input.menfacialhaircolor], [input.menhairstyles], menbodytype = [input.menbodytype], [input.menclothes], [input.boobstype], [input.hairstyleswoman], [input.womenbodytype], [input.womenclothes], [input.position], [input.location], [input.cameraphotoshot], [input.cameraeffect], [input.cameraview]
-    negativePrompt = low-quality, deformed, text, poorly drawn, ugly, bad art, amputee, [negative], [input.artStyle.negative]
+    aidata = golden ratio, [input.Ethnicity] [input.facialexpression] [input.age] [input.gender], [input.skintone], [input.Ethnicity], [input.bodytype], [input.clothingstyle], [input.clothingcolor], [input.clothingtop], [input.clothingbottom], [input.clothingunderwear], [input.clothingouterwear], [input.footwear], [input.accessory], [input.background], [input.hairstyle], [input.pose], [input.background], [input.hairstyle], [input.haircolor], [input.facialexpression], [input.facialshape], [input.eyecolor], [input.upperlips], [input.lowerlips], [input.hipstype], [input.bellytype], [input.menfacialhairstyles], [input.menfacialhaircolor], [input.menhairstyles], menbodytype = [input.menbodytype], [input.menclothes], [input.boobstype], [input.hairstyleswoman], [input.womenbodytype], [input.womenclothes], [input.position], [input.location], [input.cameraphotoshot], [input.cameraeffect], [input.cameraview]
+    //debug.value = "hello"
+    prompt = [aidata]
+    //prompt = [airesponse] 
+    //prompt = golden ratio, [input.Ethnicity] [input.facialexpression] [input.age] [input.gender], [input.skintone], [input.Ethnicity], [input.bodytype], [input.clothingstyle], [input.clothingcolor], [input.clothingtop], [input.clothingbottom], [input.clothingunderwear], [input.clothingouterwear], [input.footwear], [input.accessory], [input.background], [input.hairstyle], [input.pose], [input.background], [input.hairstyle], [input.haircolor], [input.facialexpression], [input.facialshape], [input.eyecolor], [input.upperlips], [input.lowerlips], [input.hipstype], [input.bellytype], [input.menfacialhairstyles], [input.menfacialhaircolor], [input.menhairstyles], menbodytype = [input.menbodytype], [input.menclothes], [input.boobstype], [input.hairstyleswoman], [input.womenbodytype], [input.womenclothes], [input.position], [input.location], [input.cameraphotoshot], [input.cameraeffect], [input.cameraview]
+    negativePrompt = low-quality, deformed, text, poorly drawn, ugly, bad art, amputee, [input.artStyle.negative]//[negative]
     deafultNegativePrompt = (((ugly))), (((watermark))), (((duplicate))), ((morbid)), out of frame, (((extra fingers))), ((mutated hands)), ((poorly drawn hands)), ((poorly drawn face)), (((deformed))), blurry, (((bad proportions))), cloned face, (((disfigured))), (gross proportions), (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (cropped), (dehydrated), ((jpeg artifacts)), acne, age spots, skin blemishes, fused, (((long neck))), unrealistic anatomy, unattractive features, asymmetry, unnatural eye placement, mismatched eye color, unnatural facial appearance, blurry face, poorly rendered hair, afro hair, disproportionately large breasts, imperfect skin, asymmetrical limbs, extra limbs or fingers, mutated limbs, disfigurement, severed face, head, limbs, toes, asymmetrical legs, more than two arms or legs, missing limbs or digits, unrealistic muscle definition, unnatural torso, low-resolution face, flat skin texture, excessive skin depth, 3D render aesthetics, anime or cartoon influences, absence of body part shadows, excessive shadows, unrealistic cloth shadows, misplaced body shadows, overly three-dimensional cloth, unrealistic backgrounds, improper lighting, JPEG artifacts, overexposure, over-saturation, blurriness, painting-like appearance, excessive Photoshop filters, video game aesthetics, incomplete body, bad proportions, watermarks, anime, manga, disney, low resolution, bad anatomy, bad hands, text, error, missing fingers, extra digits, worst quality, low quality, jpeg artifacts, signature, watermark, username, blurry, illustration, boring, 3D render, long neck, out of frame, mutation, deformed, canvas frame, high contrast, over saturated, glossy, bad lighting, poorly drawn, bad art, bad angle, low-resolution, worst quality, bad composition, terrible lighting, bad anatomy, cropped, low-quality, poorly drawn, low-resolution, boring, bad photo, distorted proportions, elongated body, painting, blood, deformed face, disfigured, mutation, sloppy, pixelated, aliasing, overexposed, over-saturated, fuzzy, poor quality, deformed arms, unrealistic, animated, sketches, low-quality, blurred, cut off, plastic,
     resolution = [input.shape]
     gender = [input.gender]
@@ -702,6 +817,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = 💇‍♂️Hair style💇‍♀️
       type = select
       options
+        Anything = {|}
         Medium hair =  Medium hair style
         Short hair =  Short hair style
         Curly =  Curly Hair 
@@ -730,6 +846,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = 👩‍🦰Hair color🦰
       type = select
       options
+        Anything = {|}
         Black = Deep, rich, intense, dark, sophisticated
         Brown = Natural, versatile, warm, earthy, rich (depending on shade)
         Blonde = Light, bright, platinum, golden, honey, ash (depending on shade)
@@ -847,6 +964,142 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = 😏facial expression
       type = select
       options
+        anything = {|}
+        angry = Fuming, enraged, nostrils flared, eyes narrowed
+        annoyed = annoyed facial expression
+        clenched teeth = clenched teeth facial expression
+        blush = blush facial expression
+        blush stickers = blush stickers facial expression
+        expressing = expressing facial expression
+        teasing = teasing facial expression
+        whistling = whistling facial expression
+        singing = singing facial expression
+        embarrassed = embarrassed, Flustered, blushing, cheeks burning
+        full-face blush = full-face blush facial expression
+        nose blush = nose blush facial expression
+        bored = bored facial expression
+        closed eyes = closed eyes facial expression
+        crazy = crazy facial expression
+        determined = determined facial expression
+        disappointed = disappointed facial expression
+        disdain = disdain facial expression
+        disgust = disgust facial expression
+        despair = despair facial expression
+        drunk = drunk facial expression
+        envy = envy facial expression
+        expressionless = expressionless facial expression
+        evil = evil facial expression
+        facepalm = facepalm facial expression
+        flustered = flustered facial expression
+        frustrated = frustrated facial expression
+        furrowed brow = furrowed brow facial expression
+        grimace = grimace facial expression
+        guilt = guilt facial expression
+        happy = Joyful, elated, beaming
+        kubrick stare = kubrick stare facial expression
+        lonely = lonely facial expression
+        nervous = nervous, Anxious, fidgeting, a gnawing feeling in her stomach
+        closedeye = closedeye facial expression
+        yawn = yawn facial expression
+        parted lips = parted lips facial expression
+        pain = pain facial expression
+        pout = pout facial expression
+        raised eyebrow = raised eyebrow facial expression
+        rape = rape facial expression
+        rolling eyes = rolling eyes facial expression
+        sad = Depressed, sorrowful, heartbroken
+        depressed = depressed facial expression
+        frown = frown facial expression
+        gloom = gloom facial expression
+        tears = tears facial expression
+        scared = scared facial expression
+        panicking = panicking facial expression
+        worried = worried, Concerned, apprehensive, brow furrowed
+        serious = serious facial expression
+        sigh = sigh facial expression
+        sleepy = sleepy facial expression
+        tired = tired, Exhausted, weary, eyes drooping
+        sulking = sulking facial expression
+        surprised = surprised facial expression
+        thinking = thinking facial expression
+        pensive = pensive facial expression
+        v-shaped eyebrows = v-shaped eyebrows facial expression
+        wince = wince facial expression
+        upset = upset facial expression
+        afraid = afraid facial expression
+        amused = amused facial expression
+        anger = anger facial expression
+        anxious = anxious facial expression
+        ashamed = ashamed facial expression
+        bad = bad facial expression
+        bashful = bashful facial expression
+        cold = cold facial expression
+        confident = confident facial expression
+        confused = Perplexed, bewildered, brows furrowed
+        contempt = contempt facial expression
+        coy = coy facial expression
+        curious = curious facial expression
+        disgusted = disgusted, Repulsed, horrified, recoiling
+        ecstatic = ecstatic facial expression
+        enraged = enraged facial expression
+        envious = envious facial expression
+        excited = excited, Thrilled, buzzing with anticipation, a wide grin
+        fear = fear facial expression
+        frightened = frightened facial expression
+        furled brow = furled brow facial expression
+        guilty = guilty, Remorseful, regretful, a heavy heart
+        happiness = happiness facial expression
+        hopeful = hopeful facial expression
+        hot = hot facial expression
+        hungry = hungry facial expression
+        hurt = hurt facial expression
+        indifferent = indifferent facial expression
+        interested = interested facial expression
+        jealous = jealous, Envious, a bitter taste in her mouth
+        joyful = joyful facial expression
+        loving = loving facial expression
+        miserable = miserable facial expression
+        naughty_face = naughty_face facial expression
+        neutral = neutral facial expression
+        optimistic = optimistic facial expression
+        pained = pained facial expression
+        proud = proud facial expression
+        puzzled = puzzled facial expression
+        regretful = regretful facial expression
+        relieved = relieved facial expression
+        sadness = sadness facial expression
+        shocked = shocked facial expression
+        shy = shy facial expression
+        sick = sick facial expression
+        skeptical = skeptical facial expression
+        smile = smile facial expression
+        smug = smug facial expression
+        sorry = sorry facial expression
+        stubborn = stubborn facial expression
+        stupid = stupid facial expression
+        surprise = surprise facial expression
+        suspicious = suspicious facial expression
+        thirsty = thirsty facial expression
+        thoughtful = thoughtful, Pondering, considering, lost in thought
+        withdrawn = withdrawn facial expression
+        Awe = Amazed, astonished, speechless
+        Crying = Tearful, sobbing, mascara running
+        Contemplative = Pensive, thoughtful, brow furrowed in concentration
+        Horny = Flustered, restless, a warmth creeping up her neck (suggests attraction)
+        Sad = Depressed, sorrowful, heartbroken
+        Laughing = Giggling, roaring with laughter, clutching her stomach
+        Daydreaming = Lost in thought, a soft smile playing on her lips
+        Flirting = Playful, teasing, batting her eyelashes (cliché)
+        Intrigued = Curious, captivated, brow raised in interest
+        Meditative = Serene, peaceful, eyes closed
+        Surprised = Startled, jaw agape, eyes wide
+        Yawning = Drowsy, sleepy, stifling a yawn
+//----------------- facial expression ------------------
+    facialexpression
+      label = 😏facial expression
+      type = select
+      options
+        Anything = {|}
         angry = Fuming, enraged, nostrils flared, eyes narrowed
         annoyed = annoyed facial expression
         clenched teeth = clenched teeth facial expression
@@ -979,6 +1232,528 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
     
 //----------------- common specific ------------------    
 //----------------- common face specific ------------------
+//----------------- Facial Shape ------------------
+    facialshape
+      label = Facial Shape
+      type = select
+      options
+        Oval = Balanced proportions, longer than wide, slightly narrower jaw than temples
+        Round = Soft and curved edges, full cheeks, nearly equal width and height
+        Square = Strong jawline, broad forehead, equal width and height
+        Rectangle (Oblong) = Strong jawline, broad forehead, longer than wide
+        Heart = Prominent cheekbones, wide forehead, narrow chin
+        Diamond = Narrow forehead and jawline, widest at cheekbones
+        Triangle = Narrow forehead, wider jawline, strong chin
+        Inverted Triangle = Wide forehead, narrow chin, similar to heart shape but less prominent cheekbones
+        Pear = Narrow forehead, wider jawline, fuller cheeks
+        Teardrop = Similar to pear shape but with a softer curve, narrow forehead, broad jawline
+//----------------- Eye Color ------------------
+    eyecolor
+      label = Eye Color
+      type = select
+      options
+        Anything = {|}
+        Brown = Most common eye color, ranges from light to dark shades of brown
+        Blue = Light blue color, often associated with clarity and calmness
+        Green = Shades of green, from light to dark, often rare and striking
+        Hazel = Combination of brown and green, with hints of amber and gold
+        Gray = Light to dark shades of gray, sometimes appearing blue or greenish
+        Amber = Warm golden or coppery color, rare and unique
+        Black = Very dark brown, almost appearing black in certain lighting
+        Violet = Rare color with a purplish hue, sometimes seen in individuals with albinism
+        Red = Extremely rare, associated with certain medical conditions
+//----------------- Upper Lips ------------------
+    upperlips
+      label = Upper Lips
+      type = select
+      options
+        Anything = {|}
+        Thin = Narrow upper lip, defined cupid's bow
+        Full = Plump and prominent upper lip
+        Cupid's Bow = Defined peak in the center of the upper lip
+        Rounded = Gently curved upper lip
+        Flat = Minimal curvature, appears straighter across
+        Downturned = Corners of the mouth curve downwards
+        Upturned = Corners of the mouth curve upwards
+        Defined Lip Line = Sharp contrast between the lip and skin
+        Fullness = Overall volume of the lips
+        Vermilion = The red part of the lips
+//----------------- Lower Lips ------------------
+    lowerlips
+      label = Lower Lips
+      type = select
+      options
+        Anything = {|}
+        Full = Plump and prominent, adds volume to the mouth
+        Thin = Narrow, subtle shape
+        Pouty = Protrudes slightly, fuller appearance
+        Rounded = Gentle curve, softer appearance
+        Flat = Minimal curvature, appears straighter across
+//----------------- Hips Type ------------------
+    hipstype
+      label = Hips Type
+      type = select
+      options
+        Anything = {|}
+        Narrow = Less wide than shoulders
+        Wide = Wider than shoulders
+        Curvy = Well-defined and prominent, creating curves
+        Straight = Relatively straight with minimal curves
+        Hourglass = Proportionate to shoulders with defined waist, creating an hourglass figure
+        Pear-shaped = Wider and more prominent than shoulders, often with a smaller waist
+        Inverted triangle = Narrower than shoulders, creating a V-shaped silhouette
+        Apple-shaped = Wider than shoulders and upper body, weight distributed around midsection
+
+//----------------- Belly / Abs Type ------------------
+    bellytype
+      label = Belly / Abs Type
+      type = select
+      options
+        Anything = {|}
+        Flat = Smooth, toned, minimal fat, visible muscles (optional)
+        Athletic = Well-defined, muscular abs
+        Toned = Firm, defined muscles, visible under a thin fat layer
+        Soft = Rounded, slightly protruding, softer due to higher body fat
+        Six-Pack = Highly defined and visible six abdominal muscles
+        Ripped = Extremely defined and shredded abs, visible muscle separation and vascularity
+        Hourglass = Defined waistline with toned abs, creating an hourglass figure
+        Beer Belly = Rounded and protruding due to excess fat accumulation
+        Pregnant = Enlarged due to pregnancy
+//----------------- Men specific ------------------
+//----------------- Men facial Hair styles ------------------
+    menfacialhairstyles
+      label = Men facial Hair styles
+      type = select
+      options
+        Anything = {|}
+        Clean Shaven = Smooth face, no facial hair, regular shaving
+        Stubble = Rugged look, short and evenly trimmed facial hair
+        Five O'Clock Shadow = Very light stubble, appears a few hours after shaving
+        Goatee = Hair on chin only, sometimes with a mustache
+        Van Dyke = Pointed beard on chin with mustache, no sideburns
+        Full Beard = Covers cheeks, chin, and jawline, requires grooming
+        Circle Beard = Mustache connected to a rounded goatee, forming a circle
+        Mustache = Hair on upper lip only, varies in thickness and style
+        Handlebar Mustache = Long ends that curl upwards, styled with wax
+        Chevron Mustache = Thick and wide, covers the upper lip
+        Pencil Mustache = Thin and narrow, outlines the upper lip
+        Horseshoe Mustache = Extends downwards past the corners of the mouth
+        Mutton Chops = Sideburns extend down to the corners of the mouth
+        Chin Strap = Thin line of hair along the jawline, from one sideburn to the other
+        Soul Patch = Small patch of hair just below the lower lip
+        Balbo = Mustache with disconnected beard on chin, no sideburns
+        Anchor Beard = Extends along jawline and connected to a pointed goatee
+        Extended Goatee = Extends along the jawline, "Hollywoodian"
+        Imperial = Mustache with ends styled upwards, often with a soul patch
+        French Fork = Beard split into two sections at the chin
+        Ducktail = Shorter on sides, longer at the chin, resembles a duck's tail
+        Beardstache = Full beard with a prominent mustache, requires regular grooming
+//----------------- Men Facial Hair Color ------------------
+    menfacialhaircolor
+      label = Men Facial Hair Color
+      type = select
+      options
+        Anything = {|}
+        Black = Deep, rich, intense, dark, sophisticated
+        Brown = Natural, versatile, warm, earthy, rich (depending on shade)
+        Blonde = Light, bright, platinum, golden, honey, ash (depending on shade)
+        Red = Vibrant, rich, bold, fiery, warm (depending on shade)
+        Auburn = Warm, rich, reddish-brown
+        Chestnut = Medium brown, reddish tones, natural
+        Copper = Bright, warm red, orange undertones
+        Burgundy = Deep red, purple undertones, luxurious
+        Platinum Blonde = Very light, striking, bold
+        Honey Blonde = Warm, golden, inviting
+        Ash Blonde = Cool, pale, grayish
+        Golden Blonde = Bright, sunny, golden hues
+        Strawberry Blonde = Light red, blonde undertones, soft
+        Caramel = Light brown, golden tones, warm
+        Mahogany = Dark brown, red undertones, rich
+        Jet Black = Intense, shiny, glossy
+        Silver = Light gray, elegant, striking (natural or dyed)
+        Gray = Various shades, natural or dyed
+        Pastel Pink = Light, soft, trendy, playful
+        Pastel Blue = Light, soft, unique, trendy
+        Pastel Purple = Light, soft, stylish, modern
+        Neon Pink = Bright, vibrant, bold, eye-catching
+        Neon Blue = Bright, vibrant, striking, bold
+        Neon Green = Bright, vibrant, bold, unique
+        Lavender = Soft, light purple, trendy, subtle
+        Mint Green = Light, cool, fresh, unique
+        Rose Gold = Pink and blonde blend, warm, trendy
+        Ombre = Gradient color, dark roots to lighter ends
+        Balayage = Hand-painted highlights, natural, sun-kissed
+        Highlights = Lighter streaks, adds dimension, depth
+        Lowlights = Darker streaks, adds depth, contrast
+        Bronde = Brown and blonde blend, natural, warm
+        Sandy Blonde = Light blonde, beige tones, natural, soft
+        Ash Brown = Cool brown, grayish undertones, modern, sleek
+        Golden Brown = Warm brown, golden tones, rich, inviting
+        Toffee = Warm brown, caramel tones, sweet, rich
+        Espresso = Very dark brown, almost black, deep
+        Milk Chocolate = Medium brown, warm, sweet
+        Dark Chocolate = Dark brown, rich, deep
+//----------------- Men Hairstyles ------------------
+    menhairstyles
+      label = Men Hairstyles
+      type = select
+      options
+        Anything = {|}
+        Short = Classic, easy to maintain, suits all face shapes
+        Medium = Versatile, various styles, moderate maintenance
+        Long = Extends beyond shoulders, regular care
+        Buzz cut = Very short, even length, low maintenance
+        Crew cut = Short sides, slightly longer top, military-inspired
+        Mohawk = Shaved sides, strip of longer hair in center, bold
+        Faux hawk = Similar to mohawk, less drastic sides, subtle
+        Pixie cut = Short, textured, layered, low maintenance
+        Bob = Chin-length, timeless style
+        Lob = Long bob, shoulder-length
+        Shag = Layered, messy, textured, casual
+        Undercut = Short or shaved sides, longer top, versatile
+        Bowl cut = Even length, fringe-like, retro
+        Cornrows = Braided close to scalp in rows, cultural significance
+        Dreadlocks = Twisted and matted hair, cultural roots
+        Braids = Hair sectioned and woven together
+        Ponytail = Hair pulled back and tied at the back of the head
+        Top knot = Hair tied in a knot at the top of the head
+        Bun = Hair gathered and secured, neat and stylish
+        French braid = Braided close to scalp in a single braid, elegant
+        Afro = Naturally curly hair, grown out, rounded shape, voluminous
+        Waves = Short, wavy hair styled, textured
+        Curls = Naturally curly hair, short or long, adds volume
+        Straight = Naturally straight hair, sleek and smooth
+        Wavy = Natural waves, adds texture and volume
+        Curly = Tight curls, adds volume and bounce
+        Mullet = Short front and sides, long in back, retro and bold
+        Pompadour = Short sides with voluminous top, classic
+        Quiff = Similar to pompadour, relaxed and tousled
+        Ivy League = Short sides, longer top, side-parted, preppy
+        Slicked Back = Combed back with gel or pomade
+        Flat Top = Hair cut to stand upright on top
+        High and Tight = Very short sides and back, slightly longer top
+        Taper Fade = Hair gradually fades from long to short near neckline
+//----------------- Men Clothes ------------------
+    menclothes
+      label = Men Clothes
+      type = select
+      options
+        Anything = {|}
+        Three-piece suit = Dressed in a sharp three-piece suit
+        Casual shirt = Wearing a casual button-down shirt with rolled-up sleeves
+        Tuxedo = Dressed in a tuxedo with a bow tie
+        Polo shirt and chinos = Wearing a classic polo shirt and chinos
+        Kurta pajama = Dressed in a traditional kurta pajama
+        Blazer and jeans = Wearing a tailored blazer with jeans
+        Business suit = Dressed in a formal business suit
+        Bomber jacket and cargo pants = Wearing a stylish bomber jacket with cargo pants
+        Hawaiian shirt and shorts = Dressed in a Hawaiian shirt and shorts
+        White dress shirt and dress pants = Wearing a crisp white dress shirt and dress pants
+        Kilt = Dressed in a traditional Scottish kilt
+        Leather jacket and ripped jeans = Wearing a leather jacket and ripped jeans
+        Hoodie and joggers = Dressed in a casual hoodie and joggers
+        Trench coat and sweater = Wearing a classic trench coat over a sweater
+        Mandarin collar suit = Dressed in a traditional Chinese or Mandarin collar suit
+        Linen shirt and shorts = Wearing a linen shirt and shorts for a beach look
+        Military uniform = Dressed in a military-style uniform
+        Sports jersey and shorts = Wearing a sports jersey and shorts
+        Cowboy attire = Dressed in a cowboy hat and boots
+        Sherwani = Wearing a traditional Indian sherwani
+        Safari jacket and khaki pants = Dressed in a safari jacket and khaki pants
+        Kimono = Wearing a traditional Japanese kimono
+        Varsity jacket and jeans = Dressed in a varsity jacket and jeans
+        Denim jacket and trousers = Wearing a casual denim jacket and trousers
+        Dashiki = Dressed in a traditional African dashiki
+        Thobe = Wearing a traditional Middle Eastern thobe
+        Chef's coat and apron = Dressed in a chef's coat and apron
+        Smoking jacket = Wearing a formal smoking jacket
+        Lederhosen = Dressed in a traditional Bavarian lederhosen
+        Hoodie and sweatpants = Wearing a casual hoodie and sweatpants
+        Ushanka hat and coat = Dressed in a traditional Russian ushanka hat and coat
+        Tracksuit = Wearing a tracksuit for athletic wear
+//----------------- Body Type Men ------------------
+    menbodytype
+      label = Men Body Type
+      type = select
+      options
+        Anything = {|}
+        Athletic = Well-defined muscles, lean build, fit
+        Lean = Minimal body fat, thin
+        Muscular = Prominent muscles, well-developed
+        Stocky = Broad and thick, powerful
+        Slim = Slender and narrow
+        Broad = Broad shoulders, large frame
+        Rectangle = Balanced shoulders and waist, straight
+        Ectomorph = Slim build, fast metabolism
+        Mesomorph = Muscular build, balanced metabolism
+        Endomorph = Rounder physique, higher body fat
+        Inverted Triangle = Broad shoulders, narrow waist, V-shaped
+        Oval = Broader midsection, rounded shoulders, apple shape
+        Trapezoid = Broad shoulders, narrow hips, T-shaped
+//----------------- xxx ------------------
+   
+//----------------- common face specific ------------------
+//----------------- woman specific ------------------
+//----------------- Boobs Type ------------------ not added
+    boobstype
+      label = 😏Boobs Type
+      type = select
+      options
+        Anything = {|}
+        Small = A or B cup size, relatively small
+        Medium = B to C cup size, average size
+        Large = D cup size or larger, well-endowed
+        Perky = Firm, uplifted, youthful appearance
+        Saggy = Loss of elasticity, droopy or sagging
+        Asymmetrical = Uneven size or shape between breasts
+        Tubular = Elongated and narrow appearance
+        Athletic = Small to medium size, minimal tissue
+        Full = Round and voluptuous, larger cup size
+        Wide-set = Wider space between breasts on chest
+//----------------- Hairstyles Woman ------------------ not added
+    hairstyleswoman
+      label = Hairstyles Woman
+      type = select
+      options
+        Anything = {|}
+        Short = Classic, easy to maintain, suits all face shapes
+        Medium = Versatile, various styles, moderate maintenance
+        Long = Extends beyond shoulders, regular care
+        Pixie cut = Short and textured, often layered, low maintenance
+        Bob = Chin-length, timeless style
+        Lob = Long bob, shoulder-length, versatile
+        Shag = Layered with a messy, textured look, casual style
+        Undercut = Short or shaved sides with longer top, edgy styling
+        Bowl cut = Even length all around, fringe-like appearance, retro style
+        Cornrows = Braided close to the scalp in rows, cultural significance
+        Dreadlocks = Hair twisted and matted into rope-like strands, cultural roots
+        Braids = Hair sectioned and woven together, various styles possible
+        Ponytail = Hair pulled back and tied at the back of the head, practical
+        Top knot = Hair tied into a knot at the top of the head, modern look
+        Bun = Hair gathered and secured into a bun, neat and stylish
+        French braid = Hair braided close to the scalp in a single, tight braid, elegant
+        Afro = Naturally curly hair grown out in a rounded shape, voluminous
+        Waves (Short) = Loose, flowing waves, adds texture and volume
+        Curls (Short) = Tight or loose curls, adds volume and bounce, requires moisture
+        Straight = Naturally straight hair, sleek and smooth
+        Wavy (Natural) = Natural waves, adds texture and volume, low to moderate maintenance
+        Curly (Natural) = Tight curls, adds volume and bounce, requires moisture
+        Chignon = Hair twisted and pinned at the nape of the neck, elegant updo
+        French twist = Hair twisted upwards and pinned, classic updo
+        Half up half down = Top section of hair pulled back, bottom section left loose, versatile
+        Bantu knots = Hair sectioned and twisted into small, coiled knots, cultural significance
+        Space buns = Two buns on top of the head, playful style
+        Waterfall braid = Braided style where strands fall like a waterfall, intricate and elegant
+        Fishtail braid = Braided style resembling a fish's tail, intricate and stylish
+        Milkmaid braids = Braids wrapped around the head, vintage and elegant
+        Updo = Hair styled up and off the neck, formal and elegant
+        Beach waves = Loose, tousled waves, relaxed and casual
+        Layered cut = Different lengths throughout the hair, adds volume and movement
+        Blunt cut = Hair cut straight across, even length, modern and sleek
+        Feathered cut = Hair styled with feather-like layers, soft and voluminous
+        Side-swept bangs = Bangs swept to one side, softens the face
+        Curtain bangs = Bangs parted down the middle, framing the face, retro style
+        Asymmetrical cut = Hair cut to different lengths on each side, edgy and modern
+        Graduated bob = Shorter at the back, longer at the front, angled style
+        Tapered cut = Hair gradually shortens from the top down, modern and stylish
+        Bouffant = Hair teased and volumized at the crown, vintage style
+        Pompadour = Hair swept upwards and back from the forehead, voluminous and stylish
+//----------------- Women Body Type ------------------
+    womenbodytype 
+      label = Women Body Type 
+      type = select
+      options
+        Anything = {|}
+        Hourglass = Balanced proportions, defined waist, curvy
+        Pear = Wider hips, narrower shoulders
+        Apple = Wider midsection, slimmer legs
+        Rectangle = Balanced bust and hips, minimal waist definition
+        Inverted Triangle = Broad shoulders, narrower hips
+        Athletic = Lean, muscular, fit
+        Busty = Large breasts, cleavage
+        Chubby = Soft, round body type
+        Muscular = Well-defined muscles
+        Obese = Excessive body fat
+        Petite = Short stature
+        Slim = Slender build
+        Voluptuous = Curvy, full figure
+//----------------- Women Clothes ------------------
+    womenclothes 
+      label = Women Clothes 
+      type = select
+      options
+        Anything = {|}
+        Policewoman = Dressed As A Sexy Policewoman
+        Princess Leia = Dressed As Princess Leia
+        Princess Leia (Slave) = Dressed As Slave Princess Leia
+        Punk = Dressed As A Sexy Punk
+        Pvc Dress = Wearing A Cute Pvc Dress
+        Rocky Horror = Dressed For The Rocky Horror Picture Show
+        Romper (Lace) = Wearing A Lace Romper
+        Romper (Satin) = Wearing A Satin Romper
+        Romper (Silk) = Wearing A Silk Romper
+        Sailor = Dressed As A Sexy Sailor
+        St Trinians = Dressed As A Saint Trinians School Girl
+        Saloon Girl = Dressed As A Sexy Wild West Saloon Girl
+        School Girl = Dressed As A Sexy School Girl
+        School Teacher = Dressed As A Sexy School Teacher
+        See Through Dress = Wearing A See-through Sheer Transparent White Long Dress
+        Silk Robe = Wearing A Silk Robe
+        Silk Robe (Animal Print) = Wearing A Silk Animal Print Robe
+        Slave = Dressed As A Submissive Bdsm Slave, Handcuffed And Gagged
+        Slinky Dress = Wearing A Silk Strapless Tube Top Dress, Short Dress, (Top Slipping Down)
+        Soccer = Wearing A Soccer Shirt And Stockings
+        Sports Bra = Wearing Sports Bra And Panties
+        Stockings = Nude But Wearing Just Stockings
+        Superhero = Dressed As A Sexy Superhero
+        Tennis = Wearing Sexy Tennis Clothes
+        Thong = Nude But Wearing Just A Tiny Lace Thong
+        Tied = Lesbian Bdsm, Submissive Slave, Tied Up, Bound, Leather Straps, Handcuffs, Hands Tied, Gagged, Feet Tied, Gag On Her Mouth, Rope, Hog-tied
+        Tight Jeans = Wearing Very Tight Jeans
+        Tight Leggings = Wearing Very Tight Leggings
+        Tight Latex Dress = Wearing A Very Tight Latex Dress
+        Tight Sweater = Wearing A Very Tight Sweater And Cute Skirt
+        Towel = Wearing Only A Towel Wrapped Around Her Body
+        Two-piece Bikini = Wearing A Bikini
+        Underwear = Wearing Underwear, Bra And Panties
+        Vampire = Dressed As A Sexy Vampire
+        Viking = Dressed As A Sexy Viking
+        Waitress = Dressed As A Sexy Waitress
+        Wedding Lingerie = Wearing Wedding Lingerie
+        Wedding Dress = A Wedding Dress And Veil
+        Wet Tshirt = Wearing A Wet See-through White Shirt
+        White Negligee = Wearing A See-through White Negligee
+        Witch = Dressed As A Sexy Witch
+        Wonder Woman = Wearing A Wonder Woman Costume
+        Cowgirl = Dressed As A Sexy Cowgirl
+        Bohemian Maxi Dress = Wearing A Bohemian Maxi Dress, Featuring A Relaxed Fit, Flowing Fabric, And Intricate Patterns
+        Button-down Shirt Dress = Wearing A Button-down Shirt Dress, Cinched At The Waist With A Belt
+        Fishtail Dress = Wearing A Fishtail Dress, Characterized By A Fitted Bodice And A Flared Skirt That Resembles A Fish's Tail
+        Gingham Dress = Wearing A Gingham Dress, Featuring A Checkered Pattern In A Lightweight Fabric
+        Evening Gown = Dressed In A Glamorous Evening Gown, With A Floor-length Hem And Intricate Beadwork
+        Halter Neck Dress = Wearing A Halter Neck Dress, With Straps That Wrap Around The Neck Rather Than Over The Shoulders
+        Jumpsuit = Dressed In A Jumpsuit, A One-piece Garment Combining Trousers And A Top
+        Kaftan = Wearing A Kaftan, A Loose-fitting Garment With Wide Sleeves, Originating From The Middle East
+        Midi Dress = Wearing A Midi Dress, With A Hem That Falls Halfway Between The Knee And Ankle
+        Off-shoulder Dress = Wearing An Off-shoulder Dress, With Sleeves That Rest Below The Shoulders, Showcasing The Neckline
+        Peasant Dress = Wearing A Peasant Dress, Characterized By Its Loose Fit, Often With A Gathered Neckline And Sleeves
+        Shirtdress = Wearing A Shirtdress, Resembling A Tailored Shirt But Extended To Form A Dress Length
+        Skater Dress = Wearing A Skater Dress, With A Fitted Bodice And A Flared Skirt That Typically Ends Above The Knee
+        Tunic Dress = Dressed In A Tunic Dress, A Loose-fitting Garment With A Straight Silhouette And Varying Lengths
+        Wrap Dress = Wearing A Wrap Dress, Featuring A Front Closure Formed By Wrapping One Side Across The Other And Tying At The Waist
+        Cocktail Dress = Wearing A Cocktail Dress, Designed For Semi-formal Or Cocktail Parties, Typically Knee-length Or Slightly Above
+        Boho-chic Dress = Wearing A Boho-chic Dress, Featuring Eclectic Patterns, Flowy Fabrics, And A Relaxed Silhouette
+        Mermaid Gown = Wearing A Mermaid Gown, Characterized By A Fitted Bodice That Extends Into A Dramatic Flare At The Hem
+        Ball Gown = Wearing A Ball Gown, A Formal Dress With A Fitted Bodice And A Full Skirt, Suitable For Formal Events
+        Kimono Dress = Dressed In A Kimono Dress, Inspired By Traditional Japanese Robes With Wide Sleeves And A Wrap-around Design
+        Sequin Dress = Wearing A Sequin Dress, Adorned With Shimmering Sequins Or Beads For A Glamorous Look
+        Tulle Skirt = Wearing A Tulle Skirt, Made Of Lightweight, Sheer Fabric That Creates A Voluminous And Airy Silhouette
+        Leather Jacket Over Mini Dress = Wearing A Leather Jacket Over A Mini Dress, Blending Edgy Outerwear With A Chic Dress
+        Tweed Dress = Dressed In A Tweed Dress, Featuring A Textured Fabric Typically Associated With Classic And Sophisticated Styles
+        Bandage Dress = Wearing A Bandage Dress, Made From Stretchy Fabric That Hugs The Body Tightly, Often With Crisscross Patterns
+        Boho Lace Dress = Wearing A Boho Lace Dress, Combining Bohemian Style With Delicate Lace Detailing For A Romantic Look
+        Shift Dress With Statement Sleeves = Wearing A Shift Dress With Statement Sleeves, Adding Flair To A Classic Silhouette With Bold Sleeve Designs
+        Indian Saree = Wearing a traditional Indian saree with intricate embroidery
+        Anarkali Suit = Dressed in a vibrant Anarkali suit with mirror work
+        Lehenga Choli = Wearing a graceful lehenga choli for a wedding or festive occasion
+        Salwar Kameez = Dressed in a classic salwar kameez with delicate dupatta
+        Indo-Western Fusion = Wearing a contemporary Indo-Western outfit with fusion elements
+        Sequin Mini Dress = Dressed in a sequin mini dress for a night out
+        Embellished Jumpsuit = Wearing a glamorous jumpsuit with embellishments
+        Cut-out Bodycon Dress = Dressed in a bodycon dress with cut-out details
+        Glitter Cocktail Dress = Wearing a glittery cocktail dress with a plunging neckline
+        Feathered Party Dress = Dressed in a statement-making feathered party dress
+        Marilyn Monroe Dress = Inspired by Marilyn Monroe's iconic white halter dress
+        Beyoncé Stage Outfit = Dressed in a Beyoncé-inspired stage outfit with sequins and sheer panels
+        Taylor Swift Red Carpet Gown = Wearing a Taylor Swift-inspired red carpet gown
+        Audrey Hepburn Dress = Inspired by Audrey Hepburn's classic black Givenchy dress from "Breakfast at Tiffany's"
+        Lady Gaga Avant-Garde Outfit = Dressed in a Lady Gaga-inspired avant-garde ensemble
+        Policewoman = Dressed As A Sexy Policewoman
+        Princess Leia = Dressed As Princess Leia
+        Princess Leia (Slave) = Dressed As Slave Princess Leia
+        Punk = Dressed As A Sexy Punk
+        Pvc Dress = Wearing A Cute Pvc Dress
+        Rocky Horror = Dressed For The Rocky Horror Picture Show
+        Romper (Lace) = Wearing A Lace Romper
+        Romper (Satin) = Wearing A Satin Romper
+        Romper (Silk) = Wearing A Silk Romper
+        Sailor = Dressed As A Sexy Sailor
+        St Trinians = Dressed As A Saint Trinians School Girl
+        Saloon Girl = Dressed As A Sexy Wild West Saloon Girl
+        School Girl = Dressed As A Sexy School Girl
+        School Teacher = Dressed As A Sexy School Teacher
+        See Through Dress = Wearing A See-through Sheer Transparent White Long Dress
+        Silk Robe = Wearing A Silk Robe
+        Silk Robe (Animal Print) = Wearing A Silk Animal Print Robe
+        Slave = Dressed As A Submissive Bdsm Slave, Handcuffed And Gagged
+        Slinky Dress = Wearing A Silk Strapless Tube Top Dress, Short Dress, (Top Slipping Down)
+        Soccer = Wearing A Soccer Shirt And Stockings
+        Sports Bra = Wearing Sports Bra And Panties
+        Stockings = Nude But Wearing Just Stockings
+        Superhero = Dressed As A Sexy Superhero
+        Tennis = Wearing Sexy Tennis Clothes
+        Thong = Nude But Wearing Just A Tiny Lace Thong
+        Tied = Lesbian Bdsm, Submissive Slave, Tied Up, Bound, Leather Straps, Handcuffs, Hands Tied, Gagged, Feet Tied, Gag On Her Mouth, Rope, Hog-tied
+        Tight Jeans = Wearing Very Tight Jeans
+        Tight Leggings = Wearing Very Tight Leggings
+        Tight Latex Dress = Wearing A Very Tight Latex Dress
+        Tight Sweater = Wearing A Very Tight Sweater And Cute Skirt
+        Towel = Wearing Only A Towel Wrapped Around Her Body
+        Two-piece Bikini = Wearing A Bikini
+        Underwear = Wearing Underwear, Bra And Panties
+        Vampire = Dressed As A Sexy Vampire
+        Viking = Dressed As A Sexy Viking
+        Waitress = Dressed As A Sexy Waitress
+        Wedding Lingerie = Wearing Wedding Lingerie
+        Wedding Dress = A Wedding Dress And Veil
+        Wet Tshirt = Wearing A Wet See-through White Shirt
+        White Negligee = Wearing A See-through White Negligee
+        Witch = Dressed As A Sexy Witch
+        Wonder Woman = Wearing A Wonder Woman Costume
+        Cowgirl = Dressed As A Sexy Cowgirl
+        Bohemian Maxi Dress = Wearing A Bohemian Maxi Dress, Featuring A Relaxed Fit, Flowing Fabric, And Intricate Patterns
+        Button-down Shirt Dress = Wearing A Button-down Shirt Dress, Cinched At The Waist With A Belt
+        Fishtail Dress = Wearing A Fishtail Dress, Characterized By A Fitted Bodice And A Flared Skirt That Resembles A Fish's Tail
+        Gingham Dress = Wearing A Gingham Dress, Featuring A Checkered Pattern In A Lightweight Fabric
+        Evening Gown = Dressed In A Glamorous Evening Gown, With A Floor-length Hem And Intricate Beadwork
+        Halter Neck Dress = Wearing A Halter Neck Dress, With Straps That Wrap Around The Neck Rather Than Over The Shoulders
+        Jumpsuit = Dressed In A Jumpsuit, A One-piece Garment Combining Trousers And A Top
+        Kaftan = Wearing A Kaftan, A Loose-fitting Garment With Wide Sleeves, Originating From The Middle East
+        Midi Dress = Wearing A Midi Dress, With A Hem That Falls Halfway Between The Knee And Ankle
+        Off-shoulder Dress = Wearing An Off-shoulder Dress, With Sleeves That Rest Below The Shoulders, Showcasing The Neckline
+        Peasant Dress = Wearing A Peasant Dress, Characterized By Its Loose Fit, Often With A Gathered Neckline And Sleeves
+        Shirtdress = Wearing A Shirtdress, Resembling A Tailored Shirt But Extended To Form A Dress Length
+        Skater Dress = Wearing A Skater Dress, With A Fitted Bodice And A Flared Skirt That Typically Ends Above The Knee
+        Tunic Dress = Dressed In A Tunic Dress, A Loose-fitting Garment With A Straight Silhouette And Varying Lengths
+        Wrap Dress = Wearing A Wrap Dress, Featuring A Front Closure Formed By Wrapping One Side Across The Other And Tying At The Waist
+        Cocktail Dress = Wearing A Cocktail Dress, Designed For Semi-formal Or Cocktail Parties, Typically Knee-length Or Slightly Above
+        Boho-chic Dress = Wearing A Boho-chic Dress, Featuring Eclectic Patterns, Flowy Fabrics, And A Relaxed Silhouette
+        Mermaid Gown = Wearing A Mermaid Gown, Characterized By A Fitted Bodice That Extends Into A Dramatic Flare At The Hem
+        Ball Gown = Wearing A Ball Gown, A Formal Dress With A Fitted Bodice And A Full Skirt, Suitable For Formal Events
+        Kimono Dress = Dressed In A Kimono Dress, Inspired By Traditional Japanese Robes With Wide Sleeves And A Wrap-around Design
+        Sequin Dress = Wearing A Sequin Dress, Adorned With Shimmering Sequins Or Beads For A Glamorous Look
+        Tulle Skirt = Wearing A Tulle Skirt, Made Of Lightweight, Sheer Fabric That Creates A Voluminous And Airy Silhouette
+        Leather Jacket Over Mini Dress = Wearing A Leather Jacket Over A Mini Dress, Blending Edgy Outerwear With A Chic Dress
+        Tweed Dress = Dressed In A Tweed Dress, Featuring A Textured Fabric Typically Associated With Classic And Sophisticated Styles
+        Bandage Dress = Wearing A Bandage Dress, Made From Stretchy Fabric That Hugs The Body Tightly, Often With Crisscross Patterns
+        Boho Lace Dress = Wearing A Boho Lace Dress, Combining Bohemian Style With Delicate Lace Detailing For A Romantic Look
+        Shift Dress With Statement Sleeves = Wearing A Shift Dress With Statement Sleeves, Adding Flair To A Classic Silhouette With Bold Sleeve Designs
+        Indian Saree = Wearing a traditional Indian saree with intricate embroidery
+        Anarkali Suit = Dressed in a vibrant Anarkali suit with mirror work
+        Lehenga Choli = Wearing a graceful lehenga choli for a wedding or festive occasion
+        Salwar Kameez = Dressed in a classic salwar kameez with delicate dupatta
+        Indo-Western Fusion = Wearing a contemporary Indo-Western outfit with fusion elements
+        Sequin Mini Dress = Dressed in a sequin mini dress for a night out
+        Embellished Jumpsuit = Wearing a glamorous jumpsuit with embellishments
+        Cut-out Bodycon Dress = Dressed in a bodycon dress with cut-out details
+        Glitter Cocktail Dress = Wearing a glittery cocktail dress with a plunging neckline
+        Feathered Party Dress = Dressed in a statement-making feathered party dress
+        Marilyn Monroe Dress = Inspired by Marilyn Monroe's iconic white halter dress
+        Beyoncé Stage Outfit = Dressed in a Beyoncé-inspired stage outfit with sequins and sheer panels
+        Taylor Swift Red Carpet Gown = Wearing a Taylor Swift-inspired red carpet gown
+        Audrey Hepburn Dress = Inspired by Audrey Hepburn's classic black Givenchy dress from "Breakfast at Tiffany's"
+        Lady Gaga Avant-Garde Outfit = Dressed in a Lady Gaga-inspired avant-garde ensemble
+
 
 
 //----------------- Position ------------------
@@ -986,6 +1761,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = Position
       type = select
       options
+        Anything = {|}
         Bent over = bent over with her ass exposed
         Dancing = dancing
         Close up = close up portrait
@@ -1030,6 +1806,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = Location
       type = select
       options
+        Anything = {|}
         Aeroplane = in an aeroplane
         Bar = in a bar
         Bathroom = in a bathroom
@@ -1095,6 +1872,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = Photo Shot 
       type = select
       options
+        anything = {|}
         Extreme Close-up = macro photography, detail shot, close detail, zoomed-in view, high magnification, intense focus, tight framing, close inspection, micro detail, fine detail photography, super close-up, close perspective, extreme detail, up-close and personal, microscopic view, high resolution detail, intricate detail, enlarged view, magnified scene, intimate close-up,
         Low-angle Shot = low-angle perspective, worm's-eye view, upward shot, dramatic angle, upward perspective, under view, cinematic low angle, ground-level shot, powerful stance shot, heroic angle, looking up shot, subject dominance, inferior position view, low viewpoint, ascending angle, ground-up shot, perspective from below, elevating shot, subordinate perspective, bottom-up view,
         High-angle Shot = high-angle perspective, bird's-eye view, overhead shot, elevated angle, downward shot, top-down view, aerial perspective, looking down shot, superior position view, god's-eye view, elevated viewpoint, above angle, overlooking shot, descending angle, top perspective, view from above, heightened shot, dominant perspective, sky-high view, upper angle,
@@ -1115,6 +1893,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = Effect 
       type = select
       options
+        anything = {|}
         Bokeh = bokeh effect, blurred background, shallow depth of field, soft focus, bokeh photography, dreamy effect, out of focus background, lens blur, bokeh lights, defocused background, bokeh circles, bokeh pattern, bokeh texture, blurry effect, bokeh art, bokeh backdrop, bokeh photography technique, bokeh background, bokeh highlights, bokeh dots
         Tilt-shift Effect = tilt-shift effect, miniature effect, fake miniature, tilt-shift photography, perspective control, tilt-shift lens, selective focus, miniature model effect, toy camera effect, simulated miniature, tilt-shift blur, lensbaby effect, shallow depth of field, tilted perspective, tilt-shift technique, narrow depth of field, tilted focus, faux tilt-shift, creative blur, small scale effect
         Soft Focus = soft focus, gentle focus, blurred focus, delicate focus, subtle focus, hazy focus, softened focus, gentle blur, fuzzy focus, ethereal focus, dreamy focus, softly focused, soft lens effect, soft light effect, soft edges, softened edges, soft photography, soft background, soft portrait, soft tones
@@ -1132,6 +1911,7 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
       label = view 
       type = select
       options
+        anything = {|}
         Back = shot from behind, back view, rear view, behind perspective, backward shot, from the back, over the shoulder, behind the scenes, back shot, rear perspective, from behind, view from behind, following shot, walking away shot, backward angle, perspective from behind, rearward view, back-facing shot, back camera angle
         Close Up = close-up shot, close-up view, close-up angle, close-up photography, detailed shot, close-up perspective, close-up image, macro shot, tight shot, intimate shot, close range shot, close-up focus, extreme close-up, close-up capture, close-up framing, close-up view point, detailed close
         Front = shot from the front, front view, forward shot, facing shot, head-on shot, front-facing perspective, frontal view, direct shot, eye-level shot, front camera angle, front position, forward-facing view, direct perspective, facing forward shot, frontward view, straight-on shot, frontal perspective, frontward-facing angle, full frontal shot
@@ -1158,3 +1938,5 @@ settings // This is the main settings list that is passed to `t2i-framework-plug
         70 = 70
         80 = 80
         90 = 90
+output 
+  [ai(aisettings)]
