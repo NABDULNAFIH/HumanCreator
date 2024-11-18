@@ -1,0 +1,1160 @@
+// Note: Text that comes after "//" is ignored, which allows
+// you to write notes - like the one you're reading now!
+generateInterfaceHTML = {import:t2i-framework-plugin-v2}
+
+$meta // This is used for browser tab title, social media sharing 'card', search engines, community generator listing, etc.  
+  title = Create a human.
+  image = https://user-uploads.perchance.org/file/fb52c0a7968379a8ca7d8947b2e7fe33.jpeg
+
+settings // This is the main settings list that is passed to `t2i-framework-plugin-v2` to generate the interface.
+  pageTitle = Create a human by selecting the dropdown. 
+  saveTitle = [description] ([artStyle_optionName])
+  numImages = [input.numImages] // This determines how many images get output when 'generate' is clicked. We let the user select that number - see 'numImages' under 'userInputs', below.
+  imageOptions // <-- options for the text-to-image plugin that generates the images: https://perchance.org/text-to-image-plugin
+    saveTitle = ([input.artStyle.getName]) [input.description] // .getName is a built-in Perchance property that gets the name of a given list/sublist/node
+    prompt = golden ratio, [input.Ethnicity] [input.facialexpression] [input.age] [input.gender], [input.skintone], [input.Ethnicity], [input.bodytype], [input.clothingstyle], [input.clothingcolor], [input.clothingtop], [input.clothingbottom], [input.clothingunderwear], [input.clothingouterwear], [input.footwear], [input.accessory], [input.background], [input.hairstyle], [input.pose], [input.background], [input.hairstyle], [input.haircolor], [input.facialexpression], [input.facialshape], [input.eyecolor], [input.upperlips], [input.lowerlips], [input.hipstype], [input.bellytype], [input.menfacialhairstyles], [input.menfacialhaircolor], [input.menhairstyles], menbodytype = [input.menbodytype], [input.menclothes], [input.boobstype], [input.hairstyleswoman], [input.womenbodytype], [input.womenclothes], [input.position], [input.location], [input.cameraphotoshot], [input.cameraeffect], [input.cameraview]
+    negativePrompt = low-quality, deformed, text, poorly drawn, ugly, bad art, amputee, [negative], [input.artStyle.negative]
+    deafultNegativePrompt = (((ugly))), (((watermark))), (((duplicate))), ((morbid)), out of frame, (((extra fingers))), ((mutated hands)), ((poorly drawn hands)), ((poorly drawn face)), (((deformed))), blurry, (((bad proportions))), cloned face, (((disfigured))), (gross proportions), (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (cropped), (dehydrated), ((jpeg artifacts)), acne, age spots, skin blemishes, fused, (((long neck))), unrealistic anatomy, unattractive features, asymmetry, unnatural eye placement, mismatched eye color, unnatural facial appearance, blurry face, poorly rendered hair, afro hair, disproportionately large breasts, imperfect skin, asymmetrical limbs, extra limbs or fingers, mutated limbs, disfigurement, severed face, head, limbs, toes, asymmetrical legs, more than two arms or legs, missing limbs or digits, unrealistic muscle definition, unnatural torso, low-resolution face, flat skin texture, excessive skin depth, 3D render aesthetics, anime or cartoon influences, absence of body part shadows, excessive shadows, unrealistic cloth shadows, misplaced body shadows, overly three-dimensional cloth, unrealistic backgrounds, improper lighting, JPEG artifacts, overexposure, over-saturation, blurriness, painting-like appearance, excessive Photoshop filters, video game aesthetics, incomplete body, bad proportions, watermarks, anime, manga, disney, low resolution, bad anatomy, bad hands, text, error, missing fingers, extra digits, worst quality, low quality, jpeg artifacts, signature, watermark, username, blurry, illustration, boring, 3D render, long neck, out of frame, mutation, deformed, canvas frame, high contrast, over saturated, glossy, bad lighting, poorly drawn, bad art, bad angle, low-resolution, worst quality, bad composition, terrible lighting, bad anatomy, cropped, low-quality, poorly drawn, low-resolution, boring, bad photo, distorted proportions, elongated body, painting, blood, deformed face, disfigured, mutation, sloppy, pixelated, aliasing, overexposed, over-saturated, fuzzy, poor quality, deformed arms, unrealistic, animated, sketches, low-quality, blurred, cut off, plastic,
+    resolution = [input.shape]
+    gender = [input.gender]
+    age = [input.age]
+    skintone = [input.skintone]
+    Ethnicity = [input.Ethnicity]
+    bodytype = [input.bodytype]
+    clothingstyle = [input.clothingstyle] 
+    clothingcolor = [input.clothingcolor] 
+    clothingtop = [input.clothingtop]  
+    clothingbottom = [input.clothingbottom] 
+    clothingunderwear = [input.clothingunderwear] 
+    clothingouterwear = [input.clothingouterwear] 
+    footwear = [input.footwear] 
+    accessory = [input.accessory]
+    background = [input.background]
+    hairstyle = [input.hairstyle]
+    pose = [input.pose]
+    facialexpression = [input.facialexpression]
+    background = [input.background]
+    haircolor = [input.haircolor]
+    facialshape = [input.facialshape]
+    eyecolor = [input.eyecolor]
+    upperlips = [input.upperlips]
+    lowerlips = [input.lowerlips]
+    hipstype = [input.hipstype]
+    bellytype = [input.bellytype]
+    menfacialhairstyles = [input.menfacialhairstyles]
+    menfacialhaircolor = [input.menfacialhaircolor]
+    menhairstyles = [input.menhairstyles]
+    menbodytype = [input.menbodytype]
+    menclothes = [input.menclothes]
+    boobstype = [input.boobstype]
+    hairstyleswoman = [input.hairstyleswoman]
+    womenbodytype = [input.womenbodytype]
+    womenclothes = [input.womenclothes]
+    position = [input.position]
+    location = [input.location]
+    cameraphotoshot = [input.cameraphotoshot]
+    cameraeffect = [input.cameraeffect]
+    cameraview = [input.cameraview]
+  userInputs // you can add more user inputs to this list, and then use them like [input.nameOfInput] in the `prompt`, `negativePrompt`, `artStyle.prompt`, etc.  
+//----------------- description promt ------------------
+    description
+      label = 📝 Type what you want to generate 
+      type = paragraph
+      width = min(750px, 100%)
+      takesUpFullRow = true
+      modifiers = [input.artStyle?.modifiers || input.gender?.modifiers || null]
+      modifierUpdates = event:description.input, event:artStyle.change
+      enterKeyTriggersGeneration = true // <-- can still use shift+enter to create a new line
+//----------------- Negative promt ------------------
+    negative
+      label = 🚫 Type what you dont want included (optional)
+      type = text
+      examples
+        things you 𝗱𝗼𝗻'𝘁 want in the image
+        
+        label = Type your own text! 💯 (Just for fun)
+        type = text
+//----------------- art Style ------------------        
+    artStyle
+      label = 🎨 Image Style
+      type = select
+      remember = true // <-- makes it so the selected option will be remembered even if the user refreshes/closes the page
+      options
+        𝗡𝗼 𝘀𝘁𝘆𝗹𝗲
+          prompt = [input.description]
+          negative = [input.negative]
+          meta:position = 5
+        meta:import
+          from = {import:t2i-styles} // <-- imports a bunch of 'default' styles (you can delete this, or put it at the end, below 'No style' if you want)
+          tagWeights = photo:10  // <-- boost photo styles
+        MTG Card // <-- example of a custom "Magic The Gathering" card style - just follow this format and add as many of them as you want to this 'options' list
+          prompt = [input.description], magic the gathering card
+          negative = [input.negative], low-quality, deformed, blurry, bad art
+        NSFW Photo = (casual photo), (real girl photo), (professional photography), (photorealistic), (masterpiece), Fujifilm XT3, (RAW photo), (natural beauty), (perfect body), (perfect face), (beautiful eyes), (ideal girl), (perfect hair), (perfect lips), (beautiful pussy), (beautiful nipples), (beautiful breasts), sexy, horny, nsfw, sharp focus, crystal clear photo, natural lighting, ultra detailed, high quality, 8k, fine details, high resolution 
+        Concept Art = concept art, digital art, illustration, inspired by wlop style, 8k, fine details, sharp, very detailed, high resolution
+        Photorealistic = sharp focus, professional photography, masterpiece, ultra detailed photograph, high quality, 8k, fine details
+        Anime = (anime masterpiece), cute, kawaii, waifu, intricate, highly detailed, pixiv, (anime screenshot), (cute moe anime), (kawaii masterpiece), (cuteness), (very cute), 4k, 2d, high quality
+        Studio Ghibli = studio ghibli style art, sharp, very detailed, high resolution, inspired by hayao miyazaki
+        Fantasy Portrait = d&d, fantasy, highly detailed, digital painting, artstation, sharp focus, fantasy art, character art, illustration, 8k, art by artgerm and greg rutkowski, perfect face
+        Fantasy Painting = d&d, fantasy, highly detailed, digital painting, artstation, sharp focus, fantasy art, illustration, 8k, in the style of greg rutkowski, perfect face
+        Oil Painting = photorealistic oil painting, by charlie bowater, wlop style, trending on artstation
+        Illustration = beautiful shadowing, 3d shadowing, reflective surfaces, 8k, beautifully detailed pencil illustration, intricate, epic composition, masterpiece, bold complimentary colors, stunning masterfully illustrated by artgerm, range murata, alphonse mucha
+        Watercolor = stunning watercolor, high resolution, intricate, 4k, wallpaper, concept art
+        Vintage Anime = vintage anime, 90's anime style, by hajime sorayama, by greg tocchini, anime masterpiece, pixiv, akira-style art, akira anime screenshot, 4k, high quality
+        Neon Vintage Anime = neon vintage anime style, 90's anime style, hajime sorayama, greg tocchini, neon vintage anime masterpiece, anime screenshot, 4k, high quality
+        Manga = manga, black and white, manga art masterpiece, high quality, ((comic book, multiple frames))
+        Hentai = (uncensored hentai artwork), explicit scenes, adult content, explicit sexual acts, Line Art, (Visual Hentai Porn)
+        Pencil = award winning pencil illustration, intricate, highly detailed, 4k
+        Crayon Drawing = crayon drawing
+        Cute Figurine = figurine, modern Disney style, octane render, chibi
+        P0rn = Porn videos, Pornhub, explicit scenes, adult content, explicit sexual acts, hyper-realistic, high quality, 8k, 4k
+        Pinup Girl = gorgeous pinup photos, sexy photoshoot, dramatic lighting, dramatic shadows
+        BDSM Hentai = (uncensored hentai), bdsm, bondage, domination, submission, tied, masochism, kink, (anime masterpiece), pixiv, anime screenshot, (2d), sexy, horny, naked, nsfw, high quality, high detailed, 4k, high resolution
+//----------------- image size ------------------
+    shape
+      label = 🖼️ Shape
+      type = select
+      remember = true // <-- the selected option will be remembered even if the user refreshes/closes the page
+      options
+        Portrait = 512x768
+        Square = 512x512
+        Landscape = 768x512 
+          
+//----------------- Gender ------------------
+    gender
+      label = 👨‍👩‍👧gender
+      type = select
+      options
+        Male = Male 
+        Female = Female
+        Non-binary = 
+//----------------- Age ------------------      
+    age
+      label = 👨‍💼age
+      type = select
+      options
+        Infant = Infant age
+        Child = Child age
+        Teenage = Teenage age
+        Young adult = Young adult age
+        Adult = Adult age
+        Middle-aged = Middle-aged age
+        Senior = Senior age
+        Elderly = Elderly age
+//----------------- Skin Tone ------------------   
+    skintone
+      label = 🧟skintone
+      type = select
+      options
+        Porcelain = "Porcelain skin tone
+        Rosy = Rosy skin tone
+        peach = peach skin tone
+        White = White skin tone
+        Neutral = Neutral skin tone
+        Golden = Golden skin tone
+        Olive = Olive skin tone
+        Tan = Tan skin tone
+        Caramel = Caramel skin tone
+        Bronze = Bronze skin tone
+        Mahogany = Mahogany skin tone
+        Dark Mahogany = Dark Mahogany skin tone
+        Cocoa  = Cocoa skin tone
+        Onyx Black = Onyx Black skin tone
+        Black Purple = Black Purple skin tone 
+//----------------- Ethnicity ------------------
+    Ethnicity
+      label = 🌍Ethnicity
+      type = select
+      options
+        African = African Ethnicity
+        African American = African American Ethnicity
+        Albanian = Albanian Ethnicity
+        Algerian = Algerian Ethnicity
+        American = American Ethnicity
+        Argentine = Argentine Ethnicity
+        Arab = Arab Ethnicity
+        Armenian = Armenian Ethnicity
+        Australian = Australian Ethnicity
+        Austrian = Austrian Ethnicity
+        Azerbaijani = Azerbaijani Ethnicity
+        Bangladeshi = Bangladeshi Ethnicity
+        Bahraini = Bahraini Ethnicity
+        Belarusian = Belarusian Ethnicity
+        Belgian = Belgian Ethnicity
+        Bolivian = Bolivian Ethnicity
+        Brazilian = Brazilian Ethnicity
+        British = British Ethnicity
+        Bulgarian = Bulgarian Ethnicity
+        Canadian = Canadian Ethnicity
+        Caucasian = Caucasian Ethnicity
+        Chilean = Chilean Ethnicity
+        Chinese = Chinese Ethnicity
+        Colombian = Colombian Ethnicity
+        Costa Rican = Costa Rican Ethnicity
+        Croatian = Croatian Ethnicity
+        Cuban = Cuban Ethnicity
+        Czech = Czech Ethnicity
+        Danish = Danish Ethnicity
+        Dominican = Dominican Ethnicity
+        Dutch = Dutch Ethnicity
+        Ecuadorian = Ecuadorian Ethnicity
+        Egyptian = Egyptian Ethnicity
+        Emirati = Emirati Ethnicity
+        Estonian = Estonian Ethnicity
+        Ethiopian = Ethiopian Ethnicity
+        Filipino = Filipino Ethnicity
+        Finnish = Finnish Ethnicity
+        French = French Ethnicity
+        Georgian = Georgian Ethnicity
+        German = German Ethnicity
+        Ghanaian = Ghanaian Ethnicity
+        Greek = Greek Ethnicity
+        Guatemalan = Guatemalan Ethnicity
+        Honduran = Honduran Ethnicity
+        Hispanic = Hispanic Ethnicity
+        Hungarian = Hungarian Ethnicity
+        Icelandic = Icelandic Ethnicity
+        Indian = Indian Ethnicity
+        Indonesian = Indonesian Ethnicity
+        Iranian = Iranian Ethnicity
+        Iraqi = Iraqi Ethnicity
+        Irish = Irish Ethnicity
+        Israeli = Israeli Ethnicity
+        Italian = Italian Ethnicity
+        Jamaican = Jamaican Ethnicity
+        Japanese = Japanese Ethnicity
+        Jordanian = Jordanian Ethnicity
+        Kenyan = Kenyan Ethnicity
+        Korean = Korean Ethnicity
+        Kuwaiti = Kuwaiti Ethnicity
+        Latvian = Latvian Ethnicity
+        Lebanese = Lebanese Ethnicity
+        Libyan = Libyan Ethnicity
+        Lithuanian = Lithuanian Ethnicity
+        Macedonian = Macedonian Ethnicity
+        Malaysian = Malaysian Ethnicity
+        Malian = Malian Ethnicity
+        Mexican = Mexican Ethnicity
+        Mongolian = Mongolian Ethnicity
+        Moroccan = Moroccan Ethnicity
+        Nepalese = Nepalese Ethnicity
+        New Zealand = New Zealand Ethnicity
+        Nicaraguan = Nicaraguan Ethnicity
+        Nigerian = Nigerian Ethnicity
+        Norwegian = Norwegian Ethnicity
+        Omani = Omani Ethnicity
+        Pakistani = Pakistani Ethnicity
+        Panamanian = Panamanian Ethnicity
+        Paraguayan = Paraguayan Ethnicity
+        Peruvian = Peruvian Ethnicity
+        Polish = Polish Ethnicity
+        Portuguese = Portuguese Ethnicity
+        Puerto Rican = Puerto Rican Ethnicity
+        Qatari = Qatari Ethnicity
+        Romanian = Romanian Ethnicity
+        Russian = Russian Ethnicity
+        Saudi Arabian = Saudi Arabian Ethnicity
+        Senegalese = Senegalese Ethnicity
+        Serbian = Serbian Ethnicity
+        Singaporean = Singaporean Ethnicity
+        Slovak = Slovak Ethnicity
+        Slovenian = Slovenian Ethnicity
+        Somali = Somali Ethnicity
+        South African = South African Ethnicity
+        South Korean = South Korean Ethnicity
+        Spanish = Spanish Ethnicity
+        Sri Lankan = Sri Lankan Ethnicity
+        Sudanese = Sudanese Ethnicity
+        Swedish = Swedish Ethnicity
+        Swiss = Swiss Ethnicity
+        Syrian = Syrian Ethnicity
+        Taiwanese = Taiwanese Ethnicity
+        Tanzanian = Tanzanian Ethnicity
+        Thai = Thai Ethnicity
+        Togolese = Togolese Ethnicity
+        Tunisian = Tunisian Ethnicity
+        Turkish = Turkish Ethnicity
+        Ugandan = Ugandan Ethnicity
+        Ukrainian = Ukrainian Ethnicity
+        Uruguayan = Uruguayan Ethnicity
+        Uzbek = Uzbek Ethnicity
+        Venezuelan = Venezuelan Ethnicity
+        Vietnamese = Vietnamese Ethnicity
+        Yemeni = Yemeni Ethnicity
+        Zambian = Zambian Ethnicity
+        Zimbabwean = Zimbabwean Ethnicity
+//-----------------Body type ------------------
+    bodytype
+      label = 💪bodytype
+      type = select
+      options
+        Very lean = Very lean Body type
+        Thin = Thin Body type
+        Average = Average Body type
+        Athletic = Athletic Body type
+        Fit = Fit Body type
+        Curvy = Curvy Body type
+        Overweight = Overweight Body type
+        skinny = skinny Body type
+        slender = slender Body type
+        muscular = muscular Body type
+        buxom = buxom Body type
+        voluptuous = voluptuous Body type
+        BBW = BBW Body type
+//---------------- Clothing style ------------------
+    clothingstyle
+      label = 👗clothingstyle / outfit
+      type = select
+      options
+        none = {|}
+        Casual = Casual Cloth
+        Formal = Formal Cloth
+        Bohemian = Bohemian Cloth
+        Vintage = Vintage Cloth
+        Streetwear = Streetwear Cloth
+        Hipster = Hipster Cloth
+        Athleisure = Athleisure Cloth
+        Preppy = Preppy Cloth
+        Gothic = Gothic Cloth
+        Punk = Punk Cloth
+        Minimalist = Minimalist Cloth
+        Tomboy = Tomboy Cloth
+        Retro = Retro Cloth
+        Glamorous = Glamorous Cloth
+        Edgy = Edgy Cloth
+        Classic = Classic Cloth
+        Chic = Chic Cloth
+        Romantic = Romantic Cloth
+        Sporty = Sporty Cloth
+        Artsy = Artsy Cloth
+        Ethnic = Ethnic Cloth
+        Business = Business Cloth
+        Casual Chic = Casual Chic Cloth
+        High Fashion = High Fashion Cloth
+        Rock = Rock Cloth
+        Country = Country Cloth
+        Rugged = Rugged Cloth
+        Avant-garde = Avant-garde Cloth
+        Elegant = Elegant Cloth
+        Boho-Chic = Boho-Chic Cloth
+        Flight Attendant
+        Bartender
+        Dentist
+        Housemaid
+        Journalist
+        Lawyer
+        Life Guard
+        Writer
+        Waitress
+        Police Officer
+        Masseuse
+        Photographer
+        Sheath Dress
+        Dresses
+        Mini-dress
+        Crop top
+        Bikini
+        Gym clothes
+        Wedding dress
+        Tank top
+        Swimsuit
+        Bodysuit
+        Bodycon 
+        Adult movie star = dressed as an adult movie actress
+        Trumpet dress Mermaid dress = wearing a trumpet dress trumpet dress has a fitted bodice till the knee or just below the knee  where it flares to the hem.
+        Body con dress = This refers to a tight fitting body hugging dress made of a stretchy fabric. It usually ends near or above the knee.
+        Princess seam dress = wearing a Princess seam This is a dress with a princess seam down the bodice.
+        Sheath dress = wearing a Sheath dress close fitting dress usually ending near the knee. Usually there will be a slit in the back so that you can walk comfortably.
+        Bukkake = ((sexy open mouth) ((surprised look)) she has beautiful and well-shaped breasts, is topless, (((((cum on chest))))), (((((cum on face))))), (((((semen on hair)))))
+        Shift dress = wearing a Shift dress This is a short sleeveless dress  that skims the body without a fitted waist.
+        PEPLUM SKIRTS = wearing a peplum skirt is a pencil skirt with a mini flared skirt attached over top. This unique design comes in and out of style rather quickly.
+        tulip skirt  = wearing a The design of a tulip skirt resembles petals of a tulip flower, the slightly rounded shape and gentle slanted layers. Most tulip skirts fall at or above the knee. 
+        SATIN SKIRT = wearing a High-waist skirt featuring satin side stripes, front slits at the hem and invisible side zip fastening.
+        pencil skirt = wearing a pencil skirt is a slim-fitting skirt with a straight, narrow cut. Generally the hem falls to, or is just below, the knee and is tailored for a close fit. It is named for its shape.
+        Midi Skirt with High Split (Navy) = wearing a Midi Skirt with High Split. You can never go wrong with a classic, below the knee skirt. Pair it with any of our tie neck blouses for a more professional look or with a tee a sneaker for a more casual/fun look. 
+        Midi Skirt with High Split (Charcoal) = wearing a Midi Skirt with High Split. You can never go wrong with a classic, below the knee skirt. Pair it with any of our tie neck blouses for a more professional look or with a tee a sneaker for a more casual/fun look. 
+        SHEIN EastFlair  =  wearing a dressed as a sexy floral embroidered mesh high slit dress
+        Chemise (see through) = wearing a see through transparent chemise
+        Chemise (silk) = wearing a silk chemise
+        Ruffled Shirt With Pleated Skirt = wearing a Ruffled Shirt With Pleated Skirt Subtle and sexy! This is it! This pair of full sleeves ruffled button-down shirt, and pleated skirt is one such example. This sexy clothing for women has been designed for casual and formal occasions. The short skirt is perfect for women who tone up their legs while the ruffled shirt provides the much-needed elegance to this outfit!
+        Cocktail Party Dress = wearing a Royal blue cocktail party dress inspired by Nina Dobrev. She was in a short Royal blue cocktail dress at Monique Lhuillier Fall 2012 fashion show, which was during New York Fashion Week Fall 2012. Nina Dobrev's blue cocktail dress featured off-the-shoulder neckline with form-fitting style.
+        Crop top and skirt = wearing a cute skirt and tight crop top
+        Cruella de Vil = dressed as a sexy Cruella de Vil
+        Cute skirt = wearing a very tight sweater and cute skirt
+        Daisy Dukes = wearing daisy dukes
+        Disney princess = dressed as a sexy Disney princess
+        Dominatrix = wearing a dominatrix outfit
+        Dress = wearing a sexy dress
+        Dress (animal print) = wearing a sexy animal print dress
+        Dress (designer) = wearing a plunging neckline designer dress
+        Dress (lace) = wearing a sexy lace dress
+        Dress (latex) = wearing a sexy latex dress
+        Dress (leather) = wearing a sexy leather dress
+        Dress (mesh) = wearing a sexy mesh dress
+        Dress (PVC) = wearing a sexy PVC dress
+        Dress (silk) = wearing a sexy silk dress
+        Dress (tight) = wearing a sexy tight dress
+        Fishnet bodystocking = wearing a fishnet bodystocking
+        Fishnet tights = wearing fishnet tights 
+        Flapper dress = wearing a flapper dress
+        French maid = dressed in a sexy French maid uniform, short skirt and stockings
+        Fur coat only = nude wearing a fur coat and heels
+        Goth = dressed as a sexy Goth
+        Gym clothing = wearing tight lycra gym clothes
+        Harley Quinn = wearing a Harley Quinn costume
+        Hooker = dressed as a cheap hooker
+        Hotpants = wearing tight hotpants
+        Kimono = wearing a silk kimono
+        Lab coat = nude apart from an unbuttoned laboratory coat
+        Leather = wearing leather
+        Lingerie (black) = wearing sexy black lace lingerie
+        Lingerie (blue) = wearing sexy blue lace lingerie
+        Lingerie (green) = wearing sexy emerald green lace lingerie
+        Lingerie (pink) = wearing sexy pink lace lingerie
+        Lingerie (red) = wearing sexy red lace lingerie
+        Lingerie (Victoria's Secret) = <wearing Victoria's Secret lingerie>
+        Lingerie (white)  = wearing sexy white lace lingerie
+        Lingerie (random) = wearing sexy {black|blue|emerald green|pink|red|white} lace lingerie
+        Long coat only = nude apart from a long unbuttoned coat
+        Mesh mini dress = wearing a mesh tube mini dress
+        Night gown = wearing a night gown
+        Nude = nude, large penis and testicles
+        Nun = dressed as a sexy nun, stockings and suspenders, high heels
+        Nun (latex) = dressed as a sexy nun, stockings and suspenders, high heels, latex clothes
+        Nurse = dressed as a sexy nurse
+        Oktoberfest = dressed as a sexy Oktoberfest beer girl
+        One piece bikini = wearing a one piece string bikini
+        Pajamas = wearing pajamas
+        Pirate = dressed as a sexy pirate
+        Playboy bunny = dressed as a playboy bunny, satin bodysuit, tights, high heels
+        Poison Ivy =  dressed as a sexy Poison Ivy
+        Policewoman = dressed as a sexy policewoman
+        Princess Leia = dressed as Princess Leia 
+        Princess Leia (slave) = dressed as slave Princess Leia 
+        Punk = dressed as a sexy punk
+        PVC dress = wearing a cute pvc dress
+        Rocky Horror = dressed for the Rocky Horror Picture Show
+        Romper (lace) = wearing a lace romper
+        Romper (satin) = wearing a satin romper
+        Romper (silk) = wearing a silk romper
+        Sailor = dressed as a sexy sailor
+        St Trinians = dressed as a Saint Trinians school girl
+        Saloon girl = dressed as a sexy wild west saloon girl
+        School girl = dressed as a sexy school girl
+        School teacher = dressed as a sexy school teacher
+        See through dress = wearing a see-through sheer transparent white long dress
+        Silk robe = wearing a silk robe
+        Silk robe (animal print) = wearing a silk animal print robe
+        Slave = dressed as a submissive BDSM slave, handcuffed and gagged
+        Slinky dress = wearing a silk strapless tube top dress, short dress, (top slipping down)
+        Soccer = wearing a soccer shirt and stockings
+        Sports bra = wearing sports bra and panties
+        Stockings = nude but wearing just stockings
+        Superhero = dressed as a sexy superhero
+        Tennis = wearing sexy tennis clothes
+        Thong = nude but wearing just a tiny lace thong
+        Tied = lesbian BDSM, submissive slave,  tied up, bound, leather straps, handcuffs, hands tied, gagged, feet tied, gag on her mouth, rope, hog-tied
+        Tight jeans = wearing very tight jeans 
+        Tight leggings = wearing very tight leggings 
+        Tight latex dress = wearing a very tight latex dress
+        Tight sweater = wearing a very tight sweater and cute skirt
+        Towel = wearing only a towel wrapped around her body
+        Vampire = dressed as a sexy vampire
+        Viking = dressed as a sexy Viking
+        Waitress = dressed as a sexy waitress
+        Wedding lingerie = wearing wedding lingerie
+        Wedding dress = a wedding dress and veil
+        Wet tshirt = wearing a wet see-through white shirt
+        White negligee = wearing a a see-through white negligee
+        Witch = dressed as a sexy witch
+        Wonder Woman = wearing a wonder woman costume
+//-----------------Clothing color  ------------------
+    clothingcolor
+      label = 🥻clothingcolor
+      type = select
+      options
+        none = {|}
+        Black = Black color cloth
+        White = White color cloth
+        Gray = Gray color cloth
+        Navy = Navy color cloth
+        Blue = Blue color cloth
+        Teal = Teal color cloth
+        Green = Green color cloth
+        Olive = Olive color cloth
+        Yellow = Yellow color cloth
+        Orange = Orange color cloth
+        Red = Red color cloth
+        Pink = Pink color cloth
+        Purple = Purple color cloth
+        Brown = Brown color cloth
+        Beige = Beige color cloth
+        Cream = Cream color cloth
+        Burgundy = Burgundy color cloth
+        Mustard = Mustard color cloth
+        Lavender = Lavender color cloth
+        Mint = Mint color cloth
+        Coral = Coral color cloth
+        Champagne = Champagne color cloth
+        Taupe = Taupe color cloth
+        Gold = Gold color cloth
+        Rose Gold = Rose Gold color cloth
+        Neutral = Neutral color cloth
+        Pastel = Pastel color cloth
+        Earth Tone = Earth Tone color cloth
+        Cool Tones = Cool Tones color cloth
+        Warm Tones = Warm Tones color cloth
+        Muted = Muted color cloth
+        Metallic = Metallic color cloth
+//-----------------Clothing top ------------------
+    clothingtop
+      label = 👕Clothing top
+      type = select
+      options
+        None = {|}
+        Blouse = Blouse
+        Shirt = Shirt
+        Tank top = Tank top
+        Dress = Dress
+        Mini dress = Mini dress
+        Midi dress = Midi dress
+        Maxi dress = Maxi dress
+        Shirt dress = Shirt dress
+        Sweater = Sweater
+        Hoodie = Hoodie
+        Jumpsuit = Jumpsuit
+//----------------- Clothing bottom ------------------
+    clothingbottom
+      label = 🩳Clothing bottom
+      type = select
+      options
+        None = {|}
+        Jeans = Jeans
+        Pants = Pants
+        Wide-Leg Pants = Wide-Leg Pants
+        Cargo Pants = Cargo Pants
+        Flared Pants = Flared Pants
+        Skirt = Skirt
+        Mini Skirt = Mini Skirt
+        Midi Skirt = Midi Skirt
+        Maxi Skirt = Maxi Skirt
+        Pencil Skirt = Pencil Skirt
+        Pleated Skirt = Pleated Skirt
+        Shorts = Shorts
+        High-Waisted Shorts = High-Waisted Shorts
+        Leggings = Leggings
+        Trousers = Trousers
+//----------------- Clothing underwear ------------------
+    clothingunderwear
+      label = 👙Clothing underwear🩲
+      type = select
+      options
+        No = No underwear
+        Underwear = Underwear
+        Bikini = Bikini
+        Pajamas = Pajamas
+        Thermal Underwear = Thermal Underwear
+        Swimsuit = Swimsuit
+        Negligee = Negligee
+//----------------- Clothing outerwear ------------------
+    clothingouterwear
+      label = 🧥Clothing outerwear
+      type = select
+      options
+        None = {|}
+        Pea coat = Pea coat
+        Trench coat = Trench coat
+        Jacket = Jacket
+        Suit jacket = Suit jacket
+        Denim jacket = Denim jacket
+        Bomber jacket = Bomber jacket
+//-----------------Footwear ------------------
+    footwear
+      label = 👠Footwear👟
+      type = select
+      options
+        No = no footwear
+        Sneakers = Sneakers
+        Boots = Boots
+        Sandals = Sandals
+        Heels = Heels
+        Flats = Flats
+        Shoes = Shoes
+//-----------------Accessory ------------------
+    accessory
+      label = 👓Accessory🎩
+      type = select
+      options
+        None = {|}
+        Hat = Hat
+        Belt = Belt
+        Scarf = Scarf
+        Necklace = Necklace
+        Earrings = Earrings
+        Glasses = Glasses
+        Sunglasses = Sunglasses
+        Handbag = Handbag
+        Headband = Headband
+        Anklet = Anklet
+        Handcuffs = Handcuffs
+        High Heels = High Heels
+        Belly Chain = Belly Chain
+        Neck Choker = Neck Choker
+        High Socks = high socks
+        Pantyhose = pantyhose
+        Apron = Apron 
+        Tie = Tie 
+        Gloves = Gloves 
+        Scarf = Scarf 
+        Boots = Boots 
+        Earmuffs = Earmuffs
+        Hair band = Hair band
+        Beret = Beret
+        Straw hat =Straw hat
+        Mortar board = Mortar board
+        Mouth cover = Mouth cover
+//-----------------Background / location------------------
+    background
+      label = 🏞️Background / Location🌇
+      type = select
+      options
+        Anything = {|}
+        White wall =  White wall Background
+        Studio backdrop =  Studio backdrop Background
+        Brick wall =  Brick wall Background
+        Concrete wall =  Concrete wall Background
+        Floral wallpaper =  Floral wallpaper Background
+        Forest =  Forest Background
+        Beach =  Beach Background
+        Cityscape =  Cityscape Background
+        Industrial area =  Industrial area Background
+        Rooftop =  Rooftop Background
+        Graffiti wall =  Graffiti wall Background
+        Vintage room =  Vintage room Background
+        Minimalist setting =  Minimalist setting Background
+        Bokeh lights =  Bokeh lights Background
+        Nature landscape =  Nature landscape Background
+        Urban alley =  Urban alley Background
+        Botanical garden =  Botanical garden Background
+        Old staircase =  Old staircase Background
+        Library =  Library Background
+        Desert =  Desert Background
+        Countryside =  Countryside Background
+        Waterfall =  Waterfall Background
+        Mountain range =  Mountain range Background
+        Park =  Park Background
+        Abandoned building =  Abandoned building Background
+        Shop =  Shop Background
+        Rustic barn =  Rustic barn Background
+        Warehouse =  Warehouse Background
+        Sunset =  Sunset Background
+        Sunrise =  Sunrise Background
+        Architecture =  Architecture Background
+        //Adult store = in an adult store, dildos on shelves in background
+        Aeroplane = in an aeroplane
+        Bar = in a bar
+        Bathroom = in a bathroom
+        Beach = on a beach
+        Bedroom = in a bedroom
+        //BDSM room = in a BDSM torture room
+        Bus = in a bus
+        Bushes = in the Bushes
+        Cafe = in a cafe
+        Car = in a car
+        Casino = in a casino
+        Changing room = in a changing room
+        Classroom = in a classroom, chalkboard and desk in background
+        Clothes store =  in a clothes store changing room
+        Forest = in a forest
+        Gym = in a gym
+        Hospital = in a hospital
+        Hot tub = in a hot tub
+        Hotel = in a hotel lobby
+        Hotel bedroom = in a hotel bedroom
+        Kitchen = in a kitchen
+        Living room = in a living room  
+        Locker room = in a locker room
+        Mall = in a mall
+        Night club = in a night club
+        Office = in an office
+        Park = in a park
+        Prison = in a prison cell
+        Public restroom = in a public restroom
+        Red carpet = on the red carpet at a film premiere
+        Sauna = in a sauna
+        School = at the School
+        School restroom = in a school restroom
+        Science lab = in a science laboratory
+        Shower = in a shower, in a bathroom
+        Street = in a street
+        Strip club = in a strip club
+        Supermarket = in a supermarket
+        Swimming pool = in a swimming pool
+        Train = on the train
+        Trainstation = at the train station
+        University = in a university lecture hall
+        Spaceship = on a spaceship 
+        Moon = on the moon
+        Swimming pool = in the swimming pool 
+        Ocean = next to the ocean
+//-----------------Hair style ------------------
+    hairstyle
+      label = 💇‍♂️Hair style💇‍♀️
+      type = select
+      options
+        Medium hair =  Medium hair style
+        Short hair =  Short hair style
+        Curly =  Curly Hair 
+        Wavy =  Wavy Hair style
+        Bald =  Bald Hair style
+        Bob haircut =  Bob haircut Hair style
+        Shag haircut =  Shag haircut Hair style
+        Bangs =  Bangs Hair style
+        Ponytail =  Ponytail
+        Undercut =  Undercut Hair style
+        Top knot =  Top knot Hair style
+        French braid =  French braid Hair style
+        Messy bun =  Messy bun Hair style
+        Updo =  Updo Hair style
+        Mohawk =  Mohawk Hair style
+        Shaved head =  Shaved head Hair style
+        Pompadour =  Pompadour Hair style
+        Afro hair =  Afro hair Hair style
+        Dreadlocks =  Dreadlocks Hair style
+        Braids =  Braids 
+        straight = straight hair
+        bobcut = bobcut
+        wet = wet hair
+//----------------- Hair color ------------------
+    haircolor
+      label = 👩‍🦰Hair color🦰
+      type = select
+      options
+        Black = Deep, rich, intense, dark, sophisticated
+        Brown = Natural, versatile, warm, earthy, rich (depending on shade)
+        Blonde = Light, bright, platinum, golden, honey, ash (depending on shade)
+        Red = Vibrant, rich, bold, fiery, warm (depending on shade)
+        Auburn = Warm, rich, reddish-brown
+        Chestnut = Medium brown, reddish tones, natural
+        Copper = Bright, warm red, orange undertones
+        Burgundy = Deep red, purple undertones, luxurious
+        Platinum Blonde = Very light, striking, bold
+        Honey Blonde = Warm, golden, inviting
+        Ash Blonde = Cool, pale, grayish
+        Golden Blonde = Bright, sunny, golden hues
+        Strawberry Blonde = Light red, blonde undertones, soft
+        Caramel = Light brown, golden tones, warm
+        Mahogany = Dark brown, red undertones, rich
+        Jet Black = Intense, shiny, glossy
+        Silver = Light gray, elegant, striking (natural or dyed)
+        Gray = Various shades, natural or dyed
+        Pastel Pink = Light, soft, trendy, playful
+        Pastel Blue = Light, soft, unique, trendy
+        Pastel Purple = Light, soft, stylish, modern
+        Neon Pink = Bright, vibrant, bold, eye-catching
+        Neon Blue = Bright, vibrant, striking, bold
+        Neon Green = Bright, vibrant, bold, unique
+        Lavender = Soft, light purple, trendy, subtle
+        Mint Green = Light, cool, fresh, unique
+        Rose Gold = Pink and blonde blend, warm, trendy
+        Ombre = Gradient color, dark roots to lighter ends
+        Balayage = Hand-painted highlights, natural, sun-kissed
+        Highlights = Lighter streaks, adds dimension, depth
+        Lowlights = Darker streaks, adds depth, contrast
+        Bronde = Brown and blonde blend, natural, warm
+        Sandy Blonde = Light blonde, beige tones, natural, soft
+        Ash Brown = Cool brown, grayish undertones, modern, sleek
+        Golden Brown = Warm brown, golden tones, rich, inviting
+        Toffee = Warm brown, caramel tones, sweet, rich
+        Espresso = Very dark brown, almost black, deep
+        Milk Chocolate = Medium brown, warm, sweet
+        Dark Chocolate = Dark brown, rich, deep
+//-----------------Pose------------------
+    pose
+      label = 🤸Pose
+      type = select
+      options
+        ANYTHING = {|}
+        PROFILE  =  PROFILE  pose
+        MOVEMENT   =  MOVEMENT   pose
+        SEATED  =  SEATED  pose
+        CHININHAND  =  CHININHAND  pose
+        LOOK TO SKY   =  LOOK TO SKY   pose
+        OVER THE SHOULDER   =  OVER THE SHOULDER   pose
+        HANDS-ON-HIPS   =  HANDS-ON-HIPS   pose
+        LEANING ON WALL   =  LEANING ON WALL   pose
+        THE WALL  =  THE WALL  pose
+        PLAY   =  PLAY   pose
+        LEGS CROSSED   =  LEGS CROSSED   pose
+        SURPRISED EXPRESSION  =  SURPRISED EXPRESSION  pose
+        ONE HANDINPOCKET  =  ONE HANDINPOCKET  pose
+        LOOK INTO THE DISTANCE  =  LOOK INTO THE DISTANCE  pose
+        FUNNY FACES  =  FUNNY FACES  pose
+        LAUGHING  =  LAUGHING  pose
+        POUT EXPRESSION  =  POUT EXPRESSION  pose
+        SITTING LAID BACK  =  SITTING LAID BACK  pose
+        SITTING    =  SITTING    pose
+        LAYlNG ON THE GROUND  =  LAYlNG ON THE GROUND  pose
+        ONE LEG DOWN   =  ONE LEG DOWN   pose
+        ARMS CROSSED   =  ARMS CROSSED   pose
+        BACK BENO   =  BACK BENO   pose
+        SEATED LEG OVER   =  SEATED LEG OVER   pose
+        THE HAIR FLIP  =  THE HAIR FLIP  pose
+        THE LOOKING DOWN   =  THE LOOKING DOWN   pose
+        HALF PROFILE   =  HALF PROFILE   pose
+        HAND ON ELBOW ON SHOULDER =  HAND ON ELBOW ON SHOULDER pose
+        JACKET OVER ONE SHOULDER =  JACKET OVER ONE SHOULDER pose
+        ON SHOULDER =  ON SHOULDER pose
+        REVEALING EYES   =  REVEALING EYES   pose
+        BOTH HANDS IN POCKETS  =  BOTH HANDS IN POCKETS  pose
+        VIEW  =  VIEW  pose
+        SIDE LEAN WHILELOOKINGAWAY  =  SIDE LEAN WHILELOOKINGAWAY  pose
+        THELAUGH  =  THELAUGH  pose
+        HAND ON WRIST  =  HAND ON WRIST  pose
+        HAND TO FACE  =  HAND TO FACE  pose
+        THE SCOWL  =  THE SCOWL  pose
+        THE SLEEVE PULL  =  THE SLEEVE PULL  pose
+        POCKET  =  POCKET  pose
+        PLAY WITH BUTTONS  =  PLAY WITH BUTTONS  pose
+        FIST IN HAND  =  FIST IN HAND  pose
+        CHEST SIDE VIEW  =  CHEST SIDE VIEW  pose
+        HANDSON WAIST  =  HANDSON WAIST  pose
+        SIT AND LEAN  =  SIT AND LEAN  pose
+        HANDTONECK  =  HANDTONECK  pose
+        PROPS  =  PROPS  pose
+        THE HEAD  =  THE HEAD  pose
+        COVER HALF THE FACE  =  COVER HALF THE FACE  pose
+        SIT ONELEG UNDER  =  SIT ONELEG UNDER  pose
+        HANDS BEHIND THE BACK  =  HANDS BEHIND THE BACK  pose
+        CANDID WALKING =  CANDID WALKING pose
+        //Bent over = bent over with her ass exposed
+        //Dancing = dancing
+        Close up = close up portrait
+        //Having sex = orgasming, mouth open, eyes closed, skin shining from sweat, back arched, head tilted back, soaked pussy, lying on back, (penis in vagina), penis in anus, penis in mouth
+        //Kneeling = kneeling on the floor
+        Lying = lying on her back 
+        Sitting = sitting down
+        Sleeping = sleeping
+        Spreading legs = spreading legs
+        Squatting = squatting
+        Standing = standing
+        Walking = walking
+        Working out = working out
+        Yoga = doing yoga
+        Posing = showing her body for the camera 
+//----------------- facial expression ------------------
+    facialexpression
+      label = 😏facial expression
+      type = select
+      options
+        angry = Fuming, enraged, nostrils flared, eyes narrowed
+        annoyed = annoyed facial expression
+        clenched teeth = clenched teeth facial expression
+        blush = blush facial expression
+        blush stickers = blush stickers facial expression
+        expressing = expressing facial expression
+        teasing = teasing facial expression
+        whistling = whistling facial expression
+        singing = singing facial expression
+        embarrassed = embarrassed, Flustered, blushing, cheeks burning
+        full-face blush = full-face blush facial expression
+        nose blush = nose blush facial expression
+        bored = bored facial expression
+        closed eyes = closed eyes facial expression
+        crazy = crazy facial expression
+        determined = determined facial expression
+        disappointed = disappointed facial expression
+        disdain = disdain facial expression
+        disgust = disgust facial expression
+        despair = despair facial expression
+        drunk = drunk facial expression
+        envy = envy facial expression
+        expressionless = expressionless facial expression
+        evil = evil facial expression
+        facepalm = facepalm facial expression
+        flustered = flustered facial expression
+        frustrated = frustrated facial expression
+        furrowed brow = furrowed brow facial expression
+        grimace = grimace facial expression
+        guilt = guilt facial expression
+        happy = Joyful, elated, beaming
+        kubrick stare = kubrick stare facial expression
+        lonely = lonely facial expression
+        nervous = nervous, Anxious, fidgeting, a gnawing feeling in her stomach
+        closedeye = closedeye facial expression
+        yawn = yawn facial expression
+        parted lips = parted lips facial expression
+        pain = pain facial expression
+        pout = pout facial expression
+        raised eyebrow = raised eyebrow facial expression
+        rape = rape facial expression
+        rolling eyes = rolling eyes facial expression
+        sad = Depressed, sorrowful, heartbroken
+        depressed = depressed facial expression
+        frown = frown facial expression
+        gloom = gloom facial expression
+        tears = tears facial expression
+        scared = scared facial expression
+        panicking = panicking facial expression
+        worried = worried, Concerned, apprehensive, brow furrowed
+        serious = serious facial expression
+        sigh = sigh facial expression
+        sleepy = sleepy facial expression
+        tired = tired, Exhausted, weary, eyes drooping
+        sulking = sulking facial expression
+        surprised = surprised facial expression
+        thinking = thinking facial expression
+        pensive = pensive facial expression
+        v-shaped eyebrows = v-shaped eyebrows facial expression
+        wince = wince facial expression
+        upset = upset facial expression
+        afraid = afraid facial expression
+        amused = amused facial expression
+        anger = anger facial expression
+        anxious = anxious facial expression
+        ashamed = ashamed facial expression
+        bad = bad facial expression
+        bashful = bashful facial expression
+        cold = cold facial expression
+        confident = confident facial expression
+        confused = Perplexed, bewildered, brows furrowed
+        contempt = contempt facial expression
+        coy = coy facial expression
+        curious = curious facial expression
+        disgusted = disgusted, Repulsed, horrified, recoiling
+        ecstatic = ecstatic facial expression
+        enraged = enraged facial expression
+        envious = envious facial expression
+        excited = excited, Thrilled, buzzing with anticipation, a wide grin
+        fear = fear facial expression
+        frightened = frightened facial expression
+        furled brow = furled brow facial expression
+        guilty = guilty, Remorseful, regretful, a heavy heart
+        happiness = happiness facial expression
+        hopeful = hopeful facial expression
+        hot = hot facial expression
+        hungry = hungry facial expression
+        hurt = hurt facial expression
+        indifferent = indifferent facial expression
+        interested = interested facial expression
+        jealous = jealous, Envious, a bitter taste in her mouth
+        joyful = joyful facial expression
+        loving = loving facial expression
+        miserable = miserable facial expression
+        naughty_face = naughty_face facial expression
+        neutral = neutral facial expression
+        optimistic = optimistic facial expression
+        pained = pained facial expression
+        proud = proud facial expression
+        puzzled = puzzled facial expression
+        regretful = regretful facial expression
+        relieved = relieved facial expression
+        sadness = sadness facial expression
+        shocked = shocked facial expression
+        shy = shy facial expression
+        sick = sick facial expression
+        skeptical = skeptical facial expression
+        smile = smile facial expression
+        smug = smug facial expression
+        sorry = sorry facial expression
+        stubborn = stubborn facial expression
+        stupid = stupid facial expression
+        surprise = surprise facial expression
+        suspicious = suspicious facial expression
+        thirsty = thirsty facial expression
+        thoughtful = thoughtful, Pondering, considering, lost in thought
+        withdrawn = withdrawn facial expression
+        Awe = Amazed, astonished, speechless
+        Crying = Tearful, sobbing, mascara running
+        Contemplative = Pensive, thoughtful, brow furrowed in concentration
+        Horny = Flustered, restless, a warmth creeping up her neck (suggests attraction)
+        Sad = Depressed, sorrowful, heartbroken
+        Laughing = Giggling, roaring with laughter, clutching her stomach
+        Daydreaming = Lost in thought, a soft smile playing on her lips
+        Flirting = Playful, teasing, batting her eyelashes (cliché)
+        Intrigued = Curious, captivated, brow raised in interest
+        Meditative = Serene, peaceful, eyes closed
+        Surprised = Startled, jaw agape, eyes wide
+        Yawning = Drowsy, sleepy, stifling a yawn
+    
+//----------------- common specific ------------------    
+//----------------- common face specific ------------------
+
+
+//----------------- Position ------------------
+    position 
+      label = Position
+      type = select
+      options
+        Bent over = bent over with her ass exposed
+        Dancing = dancing
+        Close up = close up portrait
+        Having sex = orgasming, mouth open, eyes closed, skin shining from sweat, back arched, head tilted back, soaked pussy, lying on back, (penis in vagina)
+        Kneeling = kneeling on the floor
+        Lying = lying on her back
+        Sitting = sitting down
+        Sleeping = sleeping
+        Spreading legs = spreading legs
+        Squatting = squatting
+        Standing = standing
+        Walking = walking
+        Working out = working out
+        Yoga = doing yoga
+        Posing = showing her body for the camera
+        Leaning against a wall = leaning against a wall
+        Underwater swimming = underwater swimming
+        Playing a musical instrument = playing a musical instrument
+        Performing on stage = performing on stage
+        Playing with pets = playing with pets
+        Cooking in the kitchen = cooking in the kitchen
+        Playing sports = playing sports
+        Lounging on a couch = lounging on a couch
+        Riding a bicycle = riding a bicycle
+        Hiking in the mountains = hiking in the mountains
+        Sunbathing on a beach towel = sunbathing on a beach towel
+        Doing household chores = doing household chores
+        Exploring a new city = exploring a new city
+        Painting or drawing = painting or drawing
+        DIY home improvement = doing DIY home improvement
+        Reading a book = reading a book in a cozy chair
+        Attending a formal event = attending a formal event
+        Taking a selfie = taking a selfie
+        Playing video games = playing video games
+        Gardening in the backyard = gardening in the backyard
+        Practicing martial arts = practicing martial arts
+        Picnicking in the park = enjoying a picnic in the park
+        Stargazing = stargazing under the night sky
+        Meditating = meditating in a peaceful setting
+//----------------- Location ------------------
+    location 
+      label = Location
+      type = select
+      options
+        Aeroplane = in an aeroplane
+        Bar = in a bar
+        Bathroom = in a bathroom
+        Beach = on a beach
+        Bedroom = in a bedroom
+        Bus = in a bus
+        Cafe = in a cafe
+        Car = in a car
+        Casino = in a casino
+        Changing room = in a changing room
+        Classroom = in a classroom, chalkboard and desk in background
+        Clothes store = in a clothes store changing room
+        Cruise Ship = on a cruise ship
+        Forest = in a forest
+        Gym = in a gym
+        Hospital = in a hospital
+        Hot tub = in a hot tub
+        Hotel lobby = in a hotel lobby
+        Hotel bedroom = in a hotel bedroom
+        Kitchen = in a kitchen
+        Living room = in a living room
+        Locker room = in a locker room
+        Log cabin = in a fancy rustic log cabin
+        Mall = in a mall
+        Night club = in a night club
+        Office = in an office
+        Park = in a park
+        Public restroom = in a public restroom
+        Red carpet = on the red carpet at a film premiere
+        Sauna = in a sauna
+        Science lab = in a science laboratory
+        Shower = in a shower, in a bathroom
+        Street = in a street
+        Strip club = in a strip club
+        Supermarket = in a supermarket, grocery store
+        Swimming pool = in the swimming pool
+        University = in a university lecture hall
+        Spaceship = on a spaceship
+        Moon = on the moon
+        Ocean = next to the ocean
+        Garden = in a lush green garden
+        Mountain cabin = in a cozy mountain cabin
+        Train compartment = in a vintage train compartment
+        Rooftop = on a rooftop overlooking the city
+        Library = in a library surrounded by books
+        Control room = in a high-tech control room
+        Underground bunker = in a secret underground bunker
+        Castle chamber = in a medieval castle chamber
+        Virtual reality = in a futuristic virtual reality simulation
+        Buddhist temple = in a serene Buddhist temple
+        Street market = in a bustling street market
+        Artist's studio = in an artist's studio filled with canvases
+        Desert oasis = in a desert oasis
+        Opera house = in a grand opera house
+        Medieval dungeon = in a medieval dungeon with torches
+        Lakeside cabin = in a tranquil lakeside cabin
+        Egyptian pyramid = in an ancient Egyptian pyramid
+        Winter chalet = in a cozy winter chalet
+        Subway station = in an abandoned subway station
+//----------------- camera ------------------
+//----------------- Photo Shot ------------------
+    cameraphotoshot 
+      label = Photo Shot 
+      type = select
+      options
+        Extreme Close-up = macro photography, detail shot, close detail, zoomed-in view, high magnification, intense focus, tight framing, close inspection, micro detail, fine detail photography, super close-up, close perspective, extreme detail, up-close and personal, microscopic view, high resolution detail, intricate detail, enlarged view, magnified scene, intimate close-up,
+        Low-angle Shot = low-angle perspective, worm's-eye view, upward shot, dramatic angle, upward perspective, under view, cinematic low angle, ground-level shot, powerful stance shot, heroic angle, looking up shot, subject dominance, inferior position view, low viewpoint, ascending angle, ground-up shot, perspective from below, elevating shot, subordinate perspective, bottom-up view,
+        High-angle Shot = high-angle perspective, bird's-eye view, overhead shot, elevated angle, downward shot, top-down view, aerial perspective, looking down shot, superior position view, god's-eye view, elevated viewpoint, above angle, overlooking shot, descending angle, top perspective, view from above, heightened shot, dominant perspective, sky-high view, upper angle,
+        Aerial Shot = aerial view, bird's-eye view, overhead shot, drone footage, elevated shot, top-down view, sky view, flying perspective, high-altitude shot, helicopter shot, aerial photography, airborne shot, sky-high perspective, above view, panoramic aerial, aerial cinematography, overhead perspective, elevated vantage point, aerial footage, flight shot, 
+        Close-up Shot = close-up, detail shot, tight shot, intimate shot, face shot, headshot, zoomed-in shot, macro shot, personal shot, close perspective, tight framing, facial detail, intense focus, close inspection, close capture, detailed view, close range, subject-focused shot, intimate view, detailed close-up,
+        Close-up Portrait = close-up portrait, headshot, facial portrait, intimate portrait, detailed portrait, face close-up, portrait close-up, personal portrait, facial close-up, tight portrait, expressive portrait, portrait detail, close-up headshot, face focus, intense portrait, close facial shot, portrait zoom, intimate face portrait, detailed headshot, up-close portrait,
+        Macro Shot = macro photography, macro close-up, extreme close-up, magnified shot, high magnification, detailed macro, micro photography, tiny detail, close detail, high resolution macro, small scale shot, intricate detail, close inspection, microscopic view, super close-up, fine detail, zoomed-in macro, close focus, enlarged detail, intimate macro,
+        Wide-angle Shot = wide-angle shot, wide perspective, broad view, panoramic shot, broad-angle view, expansive shot, wide lens, wide frame, spacious view, comprehensive shot, wide field of view, vast angle, broad perspective, extensive shot, open view, large field shot, full view, far-reaching shot, roomy shot, sweeping shot,
+        Establishing Shot = establishing shot, introductory shot, context shot, wide shot, scene-setting shot, exterior shot, opening shot, panoramic shot, overview shot, setting shot, initial shot, location shot, contextual shot, background shot, broad shot, intro shot, full shot, environment shot, entry shot, beginning shot,
+        Over-the-shoulder Shot = over-the-shoulder shot, pov shot, shoulder view, perspective shot, behind shot, back view, over shoulder perspective, character perspective shot, viewer perspective shot, shoulder angle, character over shoulder, subject perspective shot, rear view shot, close shoulder view, behind the character shot, behind subject shot, overlooking shoulder shot, shoulder camera shot, shoulder gaze shot, close behind shot,
+        Telephoto Shot = telephoto shot, telephoto lens, long lens shot, zoomed-in shot, distant shot, far shot, high magnification shot, magnified shot, telescope shot, long-distance shot, zoom shot, tele lens shot, extreme focal length shot, close-up from afar, detailed distant shot, magnification shot, focused zoom shot, high-powered shot, distant view shot, extreme zoom shot,
+        Handheld Shot = handheld shot, camera in hand, mobile shot, portable shot, on-the-go shot, mobile camera, unsteady shot, portable camera, no tripod shot, camera on the move, mobile filming, dynamic shot, walking shot, freestyle shot, moving camera shot, realistic shot, active camera, vibrant shot, live shot, natural shot
+        Panoramic Shot = panoramic shot, wide view shot, panorama shot, landscape shot, full view shot, panning shot, sweeping shot, full panoramic view, extensive shot, broad view shot, wide-angle shot, full scene shot, 360-degree shot, expansive shot, vast view shot, scenic shot, comprehensive shot, grand view shot, all-encompassing shot
+        Dramatic Angle = dramatic angle, angled perspective, dynamic angle, sharp angle, bold angle, striking angle, dramatic viewpoint, extreme angle, aggressive angle, powerful angle, high angle, low angle, steep angle, intense angle, dramatic camera angle, unique angle, dramatic shot, perspective angle, artistic angle, captivating angle
+        Extreme Angle Shot = extreme angle shot, dramatic angle shot, unique perspective shot, aggressive angle shot, high angle shot, low angle shot, unconventional angle shot, sharp angle shot, dynamic viewpoint shot, extreme perspective shot, dramatic camera angle shot, striking angle shot, bold angle shot, steep angle shot, captivating angle shot, intense angle shot, extreme viewpoint shot, artistic angle shot, unusual angle shot, extreme shot
+//----------------- Effect ------------------
+    cameraeffect 
+      label = Effect 
+      type = select
+      options
+        Bokeh = bokeh effect, blurred background, shallow depth of field, soft focus, bokeh photography, dreamy effect, out of focus background, lens blur, bokeh lights, defocused background, bokeh circles, bokeh pattern, bokeh texture, blurry effect, bokeh art, bokeh backdrop, bokeh photography technique, bokeh background, bokeh highlights, bokeh dots
+        Tilt-shift Effect = tilt-shift effect, miniature effect, fake miniature, tilt-shift photography, perspective control, tilt-shift lens, selective focus, miniature model effect, toy camera effect, simulated miniature, tilt-shift blur, lensbaby effect, shallow depth of field, tilted perspective, tilt-shift technique, narrow depth of field, tilted focus, faux tilt-shift, creative blur, small scale effect
+        Soft Focus = soft focus, gentle focus, blurred focus, delicate focus, subtle focus, hazy focus, softened focus, gentle blur, fuzzy focus, ethereal focus, dreamy focus, softly focused, soft lens effect, soft light effect, soft edges, softened edges, soft photography, soft background, soft portrait, soft tones
+        Shallow Depth Of Field = shallow depth of field, depth of field (dof), narrow depth of field, selective focus, bokeh effect, blurred background, focused foreground, focus isolation, depth isolation, shallow focus, focused subject, blurry background, background blur, foreground focus, depth control, lens aperture, bokeh photography, depth perception, soft focus, visual depth
+        Chromatic Aberrations = chromatic aberrations, color fringing, lens aberrations, optical aberrations, chromatic distortion, color distortion, lens flaws, purple fringing, green fringing, red fringing, blue fringing, lens defects, color artifacts, chromatic anomalies, lens imperfections, aberration correction, color errors, optical flaws, lens distortion, 
+        Light Leaks = light leaks, film light leaks, vintage light leaks, analog light leaks, light leak effect, camera light leaks, retro light leaks, creative light leaks, abstract light leaks, lens flare, sun flare, light flare, film effect, vintage effect, analog effect, artistic effect, photography effect, visual effect, light effects
+        Rear Projection = rear projection, projection technique, film projection, movie projection, visual effects, background projection, screen projection, projected background, film production, movie magic, special effects, movie industry, movie set, production design, cinematography technique, visual storytelling, filmmaking process, film backdrop, movie scenes
+        Lens Flare = lens flare, sun flare, flare effect, light flare, optical flare, camera flare, flare photography, lens artifacts, flare pattern, lens reflection, sunlight flare, natural flare, digital flare, creative flare, atmospheric flare, flare phenomenon, glare effect, bright flare, lens glint, flare lighting
+        Long Exposure = long exposure, slow shutter, light trails, motion blur, long shutter speed, night photography, creative exposure, low light photography, capturing motion, long exposure photography, time lapse, blurred motion, night shot, extended exposure, shutter drag, moving subjects, low light conditions, time lapse photography, light painting
+        Silhouette = silhouette, outline, shadow shape, dark figure, backlit figure, profile view, contour, shape against light, silhouette photography, backlit silhouette, contrast outline, dramatic shape, outline image, shadowed form, darkened profile, backlit subject, silhouette art, black shape, shadowed figure, outline view
+        Golden Hour = golden hour, magic hour, sunrise photography, sunset photography, warm light, soft light, golden light, twilight, dusk photography, dawn photography, natural light, beautiful light, outdoor photography, romantic light, atmospheric light, soft shadows, warm colors, evening light, low-angle sunlight, scenic light
+
+//----------------- View ------------------
+    cameraview
+      label = view 
+      type = select
+      options
+        Back = shot from behind, back view, rear view, behind perspective, backward shot, from the back, over the shoulder, behind the scenes, back shot, rear perspective, from behind, view from behind, following shot, walking away shot, backward angle, perspective from behind, rearward view, back-facing shot, back camera angle
+        Close Up = close-up shot, close-up view, close-up angle, close-up photography, detailed shot, close-up perspective, close-up image, macro shot, tight shot, intimate shot, close range shot, close-up focus, extreme close-up, close-up capture, close-up framing, close-up view point, detailed close
+        Front = shot from the front, front view, forward shot, facing shot, head-on shot, front-facing perspective, frontal view, direct shot, eye-level shot, front camera angle, front position, forward-facing view, direct perspective, facing forward shot, frontward view, straight-on shot, frontal perspective, frontward-facing angle, full frontal shot
+        Full length = full-length shot, full-body shot, full view, complete view, whole body shot, entire body shot, full-length view, full-height shot, full shot, complete shot, full-figure shot, full-body portrait, full-frame shot, standing shot, wide shot, comprehensive view, total view, long shot, uncropped shot
+        Side = shot from the side, side view, profile shot, lateral view, sideways shot, side perspective, side angle, profile perspective, side camera angle, side position, side-facing shot, side-on view, sideward shot, profile view, side shot, side-facing perspective, lateral perspective, profile angle, sideways perspective
+//----------------- xxx ------------------
+//----------------- xxx ------------------
+//----------------- xxx ------------------
+//----------------- xxx ------------------
+//----------------- xxx ------------------
+//-----------------Number of images ------------------
+    numImages
+      label = Amount images
+      type = select // <-- drop-down select menu
+      remember = true // <-- the selected option will be remembered even if the user refreshes/closes the page
+      options
+        1 = 1
+        10 = 10
+        20 = 20
+        30 = 30
+        40 = 40
+        50 = 50
+        60 = 60
+        70 = 70
+        80 = 80
+        90 = 90
