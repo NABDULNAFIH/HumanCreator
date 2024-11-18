@@ -1,0 +1,21 @@
+<!-- Learn 'HTML' here:  https://www.khanacademy.org/computing/computer-programming/html-css    -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nafih's Human Creator</title>
+  </head>
+  <body>
+    <h2>["Nafih's Human Creator"]</h2>
+   <!-- <button id="generate-button">Generate human</button>
+    <script>
+      function generateCharacter() 
+        {
+        }
+      document.getElementById('generate-button').addEventListener('click', generateCharacter);
+    </script>
+  </body>
+  </html>
+
+<!--[favicon("https://user-uploads.perchance.org/file/f863508afc5e3454f18f0af5e841fe10.png")]
+-->
+[generateInterfaceHTML(settings)]
